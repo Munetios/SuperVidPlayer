@@ -1,16 +1,16 @@
-# YouVidPlay
-YouVidPlay™ — A new video platform launching in 2026 by Munetios. Features ad toggle (default off), customizable themes, AI-powered video tools, and a user-first experience.
-# YouVidPlay™ 🎬
+# SuperVidPlayer
+SuperVidPlayer™ — A new video platform launching in 2026 by Munetios. Features ad toggle (default off), customizable themes, AI-powered video tools, and a user-first experience.
+# SuperVidPlayer™ 🎬
 
-**YouVidPlay™** is an upcoming video platform developed and owned by **Munetios**.  
-Launching worldwide in **2026**, YouVidPlay is designed to give users **more control, more customization, and no forced ads**.
+**SuperVidPlayer™** is an upcoming video platform developed and owned by **Munetios**.  
+Launching worldwide in **2026**, SuperVidPlayer is designed to give users **more control, more customization, and no forced ads**.
 
-![YouVidPlay Logo](image.png)
+![SuperVidPlayer Logo](image.png)
 
 ---
 
-## 🚀 About YouVidPlay
-YouVidPlay™ is a **next-generation video platform** built for creators and viewers. Unlike traditional platforms, YouVidPlay puts **choice and customization first**:
+## 🚀 About SuperVidPlayer
+SuperVidPlayer™ is a **next-generation video platform** built for creators and viewers. Unlike traditional platforms, SuperVidPlayer puts **choice and customization first**:
 
 - ✅ **Ad Toggle** – Ads are optional and turned **off by default**.  
 - 🎨 **Customizable Themes & UI** – Change colors, layouts, and more.  
@@ -30,10 +30,10 @@ YouVidPlay™ is a **next-generation video platform** built for creators and vie
 
 ## 🛡 Trademark & Ownership
 - © 2025–2026 **Munetios**  
-- **YouVidPlay™** and the YouVidPlay logo are **trademarks** of Munetios.  
+- **SuperVidPlayer™** and the SuperVidPlayer logo are **trademarks** of Munetios.  
 - All rights reserved.  
 
-⚠️ **Note:** This repository is only for hosting the official YouVidPlay Coming Soon page via GitHub Pages.  
+⚠️ **Note:** This repository is only for hosting the official SuperVidPlayer Coming Soon page via GitHub Pages.  
 No reproduction, redistribution, or modification of the code, assets, or branding is permitted without explicit permission.  
 
 ---
@@ -46,4 +46,4 @@ No reproduction, redistribution, or modification of the code, assets, or brandin
 
 ## 📢 Stay Tuned
 Follow development and watch for updates as we prepare for the **2026 launch**.  
-YouVidPlay will redefine video platforms with **customization, fairness, and AI-powered tools**.  
+SuperVidPlayer will redefine video platforms with **customization, fairness, and AI-powered tools**.  
