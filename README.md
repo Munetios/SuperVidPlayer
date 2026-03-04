@@ -12,7 +12,7 @@ Launching worldwide in **2026**, SuperVidPlayer is designed to give users **more
 ## 🚀 About SuperVidPlayer
 SuperVidPlayer™ is a **next-generation video platform** built for creators and viewers. Unlike traditional platforms, SuperVidPlayer puts **choice and customization first**:
 
-- ✅ **Ad Toggle** – Ads are optional and turned **off by default**.  
+- No Ads
 - 🎨 **Customizable Themes & UI** – Change colors, layouts, and more.  
 - 📱 **Cross-Platform Sync** – Access videos across all devices seamlessly.  
 - 📥 **Offline Viewing** – Watch videos anytime, anywhere (free).  
