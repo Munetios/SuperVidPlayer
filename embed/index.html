@@ -1,0 +1,3084 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SuperVidPlayer Embed</title>
+    <link
+      rel="stylesheet"
+      href="https://api.munetios.com/beautiful-css/beautiful.css"
+    />
+    <link
+      rel="shortcut icon"
+      href="https://video.munetios.com/image.png"
+      type="image/x-icon"
+    />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; img-src 'self' data: blob: https://video.munetios.com; style-src 'self' 'unsafe-inline' https://api.munetios.com; font-src 'self'; script-src 'self' 'nonce-WE237DJn3ojd83janx';"
+    />
+    <style>
+      * {
+        font-family:
+          "Google Sans Flex",
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          Roboto,
+          Oxygen,
+          Ubuntu,
+          Cantarell,
+          "Open Sans",
+          "Helvetica Neue",
+          sans-serif;
+        font-variation-settings: "ROND" 50;
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #04021a;
+        color: #fff;
+      }
+      body.light {
+        background-color: #eef3ff;
+        color: #101426;
+      }
+      body.light .video-embedApp,
+      body.light .video-player-container {
+        background: #eef3ff;
+      }
+      body.light .video-card,
+      body.light .modal-content {
+        background:
+          linear-gradient(
+            145deg,
+            rgba(255, 255, 255, 0.72),
+            rgba(255, 255, 255, 0.38)
+          ),
+          rgba(232, 239, 255, 0.74);
+        color: #101426;
+      }
+      body.light .video-card-meta,
+      body.light .share-link-value,
+      body.light .setting-help {
+        color: rgba(16, 20, 38, 0.68);
+      }
+      body.light .search-bar input {
+        color: #101426;
+      }
+      body.light input::placeholder {
+        color: rgba(16, 20, 38, 0.56);
+      }
+      body.light svg {
+        fill: #101426;
+      }
+      @font-face {
+        font-family: "Google Sans Flex";
+        src: url(/embed/fonts/GoogleSansFlexVF.ttf)
+          format("truetype-variations");
+        font-weight: 100 900;
+        font-stretch: 75% 125%;
+        font-style: normal;
+        font-display: swap;
+        unicode-range: U+000-5FF; /* Basic Latin + Latin-1 Supplement */
+      }
+      .video-embedApp {
+        display: grid;
+        grid-template-columns: 60px minmax(0, 1fr);
+        grid-template-rows: 60px minmax(0, 1fr);
+        height: 100vh;
+        width: 100vw;
+        overflow: hidden;
+      }
+      .tiny-sidebar {
+        grid-column: 1;
+        grid-row: 1 / 3;
+        display: flex;
+        flex-direction: column;
+        width: 60px;
+        height: 100%;
+        border-radius: 0;
+        border-right: 1px solid rgba(255, 255, 255, 0.2) !important;
+        border-left: none;
+        border-bottom: none;
+        border-top: none;
+      }
+      .sidebar-item {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 60px;
+        cursor: pointer;
+        border-radius: 81px;
+        transition: background-color 0.3s;
+        position: relative;
+      }
+      .sidebar-item:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+      }
+      .sidebar-item.active {
+        background: rgba(255, 255, 255, 0.18);
+      }
+      .coming-soon-dot {
+        position: absolute;
+        right: 8px;
+        top: 8px;
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        background: #8413b8;
+        box-shadow: 0 0 18px rgba(232, 140, 255, 0.75);
+      }
+      .topbar-container {
+        flex: 0 0 60px;
+        display: flex;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        border-radius: 0;
+        width: 100%;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        border-top: none;
+        border-left: none;
+        border-right: none;
+        height: 60px;
+        padding: 0 16px;
+        justify-content: space-between;
+      }
+      .logo-container {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .logo-text {
+        font-size: 20px;
+        font-feature-settings: "ss01" 1;
+        font-weight: 500;
+      }
+      .logo-container img {
+        height: 40px;
+        width: auto;
+      }
+      .search-bar {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 24px;
+        padding: 4px 12px;
+        max-width: 900px;
+        width: 100%;
+        margin-left: 10px;
+        box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.07);
+        transition: background 0.2s;
+      }
+
+      .search-bar:focus-within {
+        background: rgba(255, 255, 255, 0.16);
+      }
+
+      .search-bar input {
+        background: transparent;
+        border: none;
+        outline: none;
+        color: #fff;
+        font-size: 16px;
+        padding: 6px 0;
+        width: 100%;
+        transition: width 0.2s;
+      }
+
+      .search-bar input:focus {
+        width: 240px;
+      }
+      .topbar-right {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .favoritesBtn,
+      .topbarSettingsBtn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 40px;
+        width: 40px;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+
+      .topbarSettingsBtn {
+        display: none;
+      }
+
+      .favoritesBtn:hover,
+      .topbarSettingsBtn:hover {
+        background: rgba(255, 255, 255, 0.18);
+      }
+
+      ::-webkit-scrollbar {
+        width: 8px;
+        background: rgba(255, 255, 255, 0.04);
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.14);
+        border-radius: 8px;
+      }
+
+      input::placeholder {
+        color: #bdbdbd;
+        opacity: 1;
+      }
+
+      svg {
+        vertical-align: middle;
+      }
+
+      body,
+      html {
+        height: 100%;
+      }
+      .sidebarLayoutContainer {
+        display: contents;
+        min-height: 60px;
+      }
+      .content-container {
+        flex: 1;
+        min-height: 0;
+        overflow: visible;
+      }
+
+      #videoWatchPage {
+        min-height: 100%;
+      }
+      .hidden {
+        display: none !important;
+      }
+      .content {
+        padding: clamp(16px, 3vw, 32px);
+      }
+      .page {
+        min-height: calc(100vh - 60px);
+      }
+      .scrollable-content {
+        grid-column: 2;
+        grid-row: 1 / 3;
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+        min-height: 0;
+        height: 100%;
+      }
+      .enterASearchQuery,
+      .noResultsFoundSearch,
+      .searchFailedVideos {
+        min-height: calc(100vh - 124px);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 14px;
+        color: rgba(255, 255, 255, 0.76);
+        text-align: center;
+      }
+      .enterASearchQuery p,
+      .noResultsFoundSearch p,
+      .searchFailedVideos p {
+        margin: 0;
+        font-size: clamp(16px, 2vw, 22px);
+      }
+      #SearchResultsVideosList {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+        gap: 18px;
+      }
+      .video-card {
+        display: grid;
+        gap: 12px;
+        padding: 14px;
+        border-radius: 22px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background:
+          linear-gradient(
+            145deg,
+            rgba(255, 255, 255, 0.12),
+            rgba(255, 255, 255, 0.04)
+          ),
+          rgba(7, 5, 30, 0.68);
+        cursor: pointer;
+        min-height: 218px;
+        transition:
+          transform 0.2s ease,
+          border-color 0.2s ease,
+          background 0.2s ease;
+      }
+      .video-card:hover,
+      .video-card:focus-visible {
+        transform: translateY(-3px);
+        border-color: rgba(140, 244, 255, 0.54);
+        background:
+          linear-gradient(
+            145deg,
+            rgba(140, 244, 255, 0.16),
+            rgba(255, 255, 255, 0.06)
+          ),
+          rgba(7, 5, 30, 0.76);
+        outline: none;
+      }
+      .video-thumb {
+        position: relative;
+        min-height: 132px;
+        aspect-ratio: 16 / 9;
+        border-radius: 16px;
+        overflow: hidden;
+        background:
+          radial-gradient(
+            circle at 24% 18%,
+            rgba(140, 244, 255, 0.32),
+            transparent 30%
+          ),
+          linear-gradient(135deg, #17103d, #06031e 60%, #1c3157);
+        display: grid;
+        place-items: center;
+      }
+      .video-thumb img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .video-thumb.has-image::before,
+      .video-thumb.has-image::after {
+        z-index: 1;
+      }
+      .video-thumb::before {
+        content: "";
+        width: 54px;
+        height: 54px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.18);
+        backdrop-filter: blur(2px) saturate(140%);
+        -webkit-backdrop-filter: blur(2px) saturate(140%);
+        border: 1px solid rgba(255, 255, 255, 0.24);
+      }
+      .video-thumb::after {
+        content: "";
+        position: absolute;
+        border-left: 16px solid #fff;
+        border-top: 10px solid transparent;
+        border-bottom: 10px solid transparent;
+        transform: translateX(2px);
+      }
+      .video-duration-pill,
+      .video-quality-pill {
+        position: absolute;
+        z-index: 2;
+        bottom: 10px;
+        right: 10px;
+        padding: 4px 8px;
+        border-radius: 999px;
+        background: rgba(0, 0, 0, 0.52);
+        color: #fff;
+        font-size: 12px;
+      }
+      .video-quality-pill {
+        right: auto;
+        left: 10px;
+      }
+      .video-card-title {
+        margin: 0;
+        font-size: 17px;
+        line-height: 1.25;
+        font-weight: 650;
+      }
+      .video-card-meta {
+        margin: 0;
+        color: rgba(255, 255, 255, 0.64);
+        font-size: 13px;
+        font-family:
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          Roboto,
+          Oxygen,
+          Ubuntu,
+          Cantarell,
+          "Open Sans",
+          "Helvetica Neue",
+          sans-serif;
+      }
+      .retry-btn,
+      .copy-link-btn {
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        color: #fff;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 999px;
+        min-height: 42px;
+        padding: 0 18px;
+        cursor: pointer;
+      }
+      .video-player-container {
+        height: 100%;
+        display: grid;
+        grid-template-rows: auto 1fr;
+        gap: 12px;
+        background: #04021a;
+      }
+      .video-player-container:fullscreen {
+        width: 100vw;
+        height: 100vh;
+        padding: 12px;
+        background: #000;
+      }
+      .video-player-container:fullscreen .topbar-right-video {
+        display: none;
+      }
+      .video-player-topbar {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-width: 0;
+      }
+      .menuBtn,
+      .favoriteVideoBtn,
+      .shareVideoBtn,
+      .pipBtn,
+      .settingsBtn,
+      .captionsBtn,
+      .fullscreenBtn,
+      .play-btn,
+      .volume-btn {
+        width: 42px;
+        height: 42px;
+        border-radius: 999px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition:
+          background 0.2s ease,
+          transform 0.2s ease;
+      }
+      .menuBtn:hover,
+      .favoriteVideoBtn:hover,
+      .shareVideoBtn:hover,
+      .pipBtn:hover,
+      .settingsBtn:hover,
+      .captionsBtn:hover,
+      .fullscreenBtn:hover,
+      .play-btn:hover,
+      .volume-btn:hover {
+        background: rgba(255, 255, 255, 0.16);
+      }
+      .favoriteVideoBtn.active svg,
+      .favoritesBtn.active svg {
+        fill: #8413b8;
+      }
+      .videoTitle {
+        flex: 1;
+        min-width: 0;
+        max-width: 100%;
+        display: block;
+        padding: 12px 16px;
+        border-radius: 999px;
+        font-weight: 650;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+      .topbar-right-video {
+        flex: 0 0 auto;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px;
+        border-radius: 999px;
+      }
+      .video-player {
+        position: relative;
+        min-height: 300px;
+        border-radius: 24px;
+        overflow: hidden;
+        background: #000;
+        box-shadow: 0 28px 80px rgba(0, 0, 0, 0.32);
+        display: grid;
+        place-items: center;
+      }
+      .video {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        pointer-events: none;
+      }
+      .video-render-canvas {
+        width: 100%;
+        height: 100%;
+        display: block;
+        object-fit: contain;
+        background: #000;
+        image-rendering: auto;
+      }
+      .video-player[data-quality="144p"] .video-render-canvas,
+      .video-player[data-quality="240p"] .video-render-canvas {
+        image-rendering: pixelated;
+      }
+      .video-player.controls-hidden .video-controls {
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(14px);
+      }
+      .video-player.controls-visible .video-controls,
+      .video-player:hover .video-controls,
+      .video-player:focus-within .video-controls {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateY(0);
+      }
+      .caption-overlay {
+        position: absolute;
+        left: 50%;
+        bottom: 92px;
+        z-index: 4;
+        max-width: min(760px, calc(100% - 40px));
+        transform: translateX(-50%);
+        padding: 10px 14px;
+        border-radius: 14px;
+        background: rgba(0, 0, 0, 0.72);
+        color: #fff;
+        text-align: center;
+        line-height: 1.35;
+        font-size: clamp(14px, 1.4vw, 18px);
+      }
+      .captionsBtn.active {
+        background: rgba(140, 244, 255, 0.18);
+      }
+      .video-controls {
+        position: absolute;
+        z-index: 5;
+        left: 14px;
+        right: 14px;
+        bottom: 14px;
+        display: grid;
+        grid-template-columns: auto minmax(90px, 1fr) auto;
+        align-items: center;
+        gap: 12px;
+        padding: 8px;
+        border-radius: 22px;
+        background: rgba(10, 8, 30, 0.56);
+        opacity: 1;
+        transform: translateY(0);
+        transition:
+          opacity 0.22s ease,
+          transform 0.22s ease;
+      }
+      .video-controls-left,
+      .video-controls-right {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        min-width: 0;
+      }
+      .video-timestamp {
+        min-width: 92px;
+        color: rgba(255, 255, 255, 0.82);
+        font-size: 13px;
+        white-space: nowrap;
+      }
+      .video-controls-timeSlider input,
+      .volume-slider input {
+        width: 100%;
+        accent-color: #8413b8;
+      }
+      .volume-btn {
+        position: relative;
+      }
+      .volume-slider {
+        position: absolute;
+        left: 0;
+        bottom: 48px;
+        width: 168px;
+        padding: 10px;
+        border-radius: 16px;
+        background: rgba(8, 7, 26, 0.01);
+        backdrop-filter: blur(2px);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+      }
+      .volume-value {
+        margin-top: 4px;
+        font-size: 12px;
+        text-align: center;
+      }
+      .video-settingsWrapper,
+      .dropdown-wrapper {
+        position: fixed;
+        right: 18px;
+        bottom: 92px;
+        width: min(280px, calc(100vw - 36px));
+        z-index: 40;
+        padding: 8px;
+        border-radius: 20px;
+        background: rgba(8, 7, 26, 0.3);
+      }
+      .dropdown-wrapper {
+        bottom: 238px;
+      }
+      .video-settingsWrapperItem,
+      .dropdown-item,
+      .dropdown-toggle {
+        min-height: 46px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 0 12px;
+        cursor: pointer;
+      }
+      .video-settingsWrapperItem:hover,
+      .dropdown-item:hover,
+      .dropdown-toggle:hover,
+      .dropdown-item.selected {
+        background: rgba(255, 255, 255, 0.14);
+      }
+      .custom-toggle-trigger input {
+        appearance: none;
+        width: 42px;
+        height: 24px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.2);
+        position: relative;
+        cursor: pointer;
+        transition: background 0.2s ease;
+      }
+      .custom-toggle-trigger input::before {
+        content: "";
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        width: 18px;
+        height: 18px;
+        border-radius: 999px;
+        background: #fff;
+        transition: transform 0.2s ease;
+      }
+      .custom-toggle-trigger input:checked {
+        background: #53d8e8;
+      }
+      .custom-toggle-trigger input:checked::before {
+        transform: translateX(18px);
+      }
+      .modal {
+        position: fixed;
+        inset: 0;
+        z-index: 60;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 18px;
+        background: rgba(0, 0, 0, 0.5);
+      }
+      .modal.open {
+        display: flex;
+      }
+      .modal-content {
+        width: min(480px, 100%);
+        border-radius: 24px;
+        padding: 18px;
+        background: rgba(10, 8, 30, 0.86);
+      }
+      .modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        font-size: 20px;
+        font-weight: 650;
+      }
+      .modal-close {
+        width: 40px;
+        height: 40px;
+        border-radius: 999px;
+        display: grid;
+        place-items: center;
+        cursor: pointer;
+      }
+      .modal-close:hover {
+        background: rgba(255, 255, 255, 0.14);
+      }
+      .modal-body {
+        display: grid;
+        gap: 16px;
+        padding-top: 16px;
+      }
+      .loading-share {
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+        border: 3px solid rgba(255, 255, 255, 0.16);
+        border-top-color: #8cf4ff;
+        margin: 4px auto;
+        position: relative;
+        animation: spinCircle 0.9s linear infinite;
+      }
+      .loading-share::after {
+        content: "";
+        position: absolute;
+        inset: 9px;
+        border-radius: 50%;
+        border: 2px solid rgba(255, 255, 255, 0.18);
+        border-bottom-color: #fff;
+        animation: spinCircle 0.58s linear infinite reverse;
+      }
+      .shareOptions {
+        display: grid;
+        gap: 10px;
+      }
+      .share-link-box {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-width: 0;
+      }
+      .share-link-value {
+        flex: 1;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        padding: 12px;
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.08);
+        color: rgba(255, 255, 255, 0.82);
+      }
+      .share-button-grid,
+      .settings-action-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(116px, 1fr));
+        gap: 10px;
+      }
+      .share-social-btn,
+      .settings-action-btn {
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        color: inherit;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 999px;
+        min-height: 42px;
+        padding: 0 16px;
+        cursor: pointer;
+      }
+      .settings-modal-content {
+        width: min(560px, 100%);
+      }
+      .settings-panel {
+        display: grid;
+        gap: 14px;
+      }
+      .setting-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(160px, 220px);
+        gap: 12px;
+        align-items: center;
+        padding: 12px;
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.07);
+      }
+      .setting-label {
+        display: grid;
+        gap: 4px;
+        font-weight: 650;
+      }
+      .setting-help {
+        color: rgba(255, 255, 255, 0.62);
+        font-size: 13px;
+        font-family:
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          Roboto,
+          Oxygen,
+          Ubuntu,
+          Cantarell,
+          "Open Sans",
+          "Helvetica Neue",
+          sans-serif;
+        font-weight: 400;
+      }
+      .custom-dropdown {
+        position: relative;
+      }
+      .custom-dropdown-trigger {
+        width: 100%;
+        min-height: 42px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        border-radius: 999px;
+        padding: 0 14px;
+        color: inherit;
+        background: rgba(255, 255, 255, 0.1);
+        cursor: pointer;
+      }
+      .custom-dropdown-menu {
+        position: absolute;
+        top: calc(100% + 8px);
+        left: 0;
+        right: 0;
+        z-index: 70;
+        display: grid;
+        gap: 4px;
+        padding: 8px;
+        border-radius: 18px;
+        background: rgba(8, 7, 26, 0.88);
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        backdrop-filter: blur(2px) saturate(150%);
+        -webkit-backdrop-filter: blur(2px) saturate(150%);
+      }
+      body.light .custom-dropdown-menu {
+        background: rgba(244, 248, 255, 0.9);
+      }
+      .custom-dropdown-option {
+        min-height: 38px;
+        border: 0;
+        border-radius: 12px;
+        padding: 0 10px;
+        color: inherit;
+        background: transparent;
+        cursor: pointer;
+        text-align: left;
+      }
+      .custom-dropdown-option:hover,
+      .custom-dropdown-option.active {
+        background: rgba(140, 244, 255, 0.16);
+      }
+      .toast-stack {
+        position: fixed;
+        right: 16px;
+        top: 76px;
+        z-index: 90;
+        display: grid;
+        gap: 10px;
+        width: min(340px, calc(100vw - 32px));
+      }
+      .toast {
+        padding: 12px 14px;
+        border-radius: 18px;
+        background: rgba(10, 8, 30, 0.01);
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        color: #fff;
+        backdrop-filter: blur(2px) saturate(150%);
+        -webkit-backdrop-filter: blur(2px) saturate(150%);
+        box-shadow: 0 18px 44px rgba(0, 0, 0, 0.24);
+      }
+      @keyframes spinCircle {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      @media (max-width: 1050px) {
+        .content {
+          padding: clamp(14px, 2.4vw, 24px);
+        }
+        #SearchResultsVideosList {
+          grid-template-columns: repeat(
+            auto-fill,
+            minmax(min(100%, 220px), 1fr)
+          );
+          gap: 14px;
+        }
+        .video-card {
+          min-height: 198px;
+          padding: 12px;
+        }
+        .video-card-title {
+          font-size: 16px;
+        }
+        .video-player {
+          min-height: 360px;
+        }
+      }
+      @media (max-width: 800px) {
+        .video-embedApp {
+          grid-template-columns: minmax(0, 1fr);
+        }
+        .tiny-sidebar {
+          display: none;
+        }
+        .scrollable-content {
+          grid-column: 1;
+        }
+        .topbarSettingsBtn {
+          display: flex;
+        }
+        .topbar-container {
+          padding: 0 10px;
+          gap: 8px;
+        }
+        .logo-text {
+          display: none;
+        }
+        .logo-container img {
+          height: 34px;
+        }
+        .search-bar {
+          min-width: 0;
+          margin-left: 0;
+        }
+        .content {
+          padding: 12px;
+        }
+        .video-player-container {
+          min-height: calc(100vh - 84px);
+        }
+        .video-player-topbar {
+          gap: 6px;
+        }
+        .videoTitle {
+          font-size: 14px;
+          padding: 10px 12px;
+        }
+        .topbar-right-video {
+          gap: 0;
+          padding: 2px;
+        }
+        .video-player {
+          min-height: min(62vh, 440px);
+          border-radius: 18px;
+        }
+        .video-controls {
+          top: 0;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          display: block;
+          padding: 0;
+          border-radius: 0;
+          background: linear-gradient(
+            to top,
+            rgba(0, 0, 0, 0.62),
+            rgba(0, 0, 0, 0.08) 44%,
+            rgba(0, 0, 0, 0)
+          );
+          pointer-events: none;
+        }
+        .video-controls-left,
+        .video-controls-right,
+        .video-controls-timeSlider {
+          pointer-events: auto;
+        }
+        .video-controls-left {
+          position: absolute;
+          inset: 0;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+        .play-btn {
+          width: 64px;
+          height: 64px;
+          background: rgba(255, 255, 255, 0.18);
+          backdrop-filter: blur(2px) saturate(140%);
+          -webkit-backdrop-filter: blur(2px) saturate(140%);
+        }
+        .volume-btn {
+          position: absolute;
+          left: 12px;
+          bottom: 48px;
+        }
+        .video-timestamp {
+          position: absolute;
+          left: 62px;
+          bottom: 58px;
+          min-width: 0;
+          font-size: 12px;
+        }
+        .video-controls-timeSlider {
+          position: absolute;
+          left: 12px;
+          right: 12px;
+          bottom: 14px;
+        }
+        .video-controls-right {
+          position: absolute;
+          right: 10px;
+          bottom: 44px;
+          gap: 2px;
+        }
+        .pipBtn,
+        .captionsBtn {
+          display: none;
+        }
+        .caption-overlay {
+          bottom: 92px;
+        }
+      }
+      @media (max-width: 500px) {
+        .topbar-container {
+          position: sticky;
+        }
+
+        .topbar-right {
+          gap: 4px;
+        }
+        .video-player {
+          min-height: min(58vh, 360px);
+        }
+        .shareVideoBtn,
+        .favoriteVideoBtn {
+          width: 38px;
+          height: 38px;
+        }
+        .video-controls-right .settingsBtn,
+        .fullscreenBtn {
+          width: 38px;
+          height: 38px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="video-embedApp" id="app">
+      <div class="sidebarLayoutContainer">
+        <div class="tiny-sidebar liquid-glass">
+          <div class="sidebar-item" id="searchVideosBtn">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="24px"
+              viewBox="0 -960 960 960"
+              width="24px"
+              fill="#e3e3e3"
+            >
+              <path
+                d="M380-320q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l224 224q11 11 11 28t-11 28q-11 11-28 11t-28-11L532-372q-30 24-69 38t-83 14Zm0-80q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z"
+              />
+            </svg>
+          </div>
+          <div
+            class="sidebar-item"
+            id="sidebarSettingsBtn"
+            title="Settings coming soon"
+          >
+            <span class="coming-soon-dot"></span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="24px"
+              viewBox="0 -960 960 960"
+              width="24px"
+              fill="#e3e3e3"
+            >
+              <path
+                d="M433-80q-27 0-46.5-18T363-142l-9-66q-13-5-24.5-12T307-235l-62 26q-25 11-50 2t-39-32l-47-82q-14-23-8-49t27-43l53-40q-1-7-1-13.5v-27q0-6.5 1-13.5l-53-40q-21-17-27-43t8-49l47-82q14-23 39-32t50 2l62 26q11-8 23-15t24-12l9-66q4-26 23.5-44t46.5-18h94q27 0 46.5 18t23.5 44l9 66q13 5 24.5 12t22.5 15l62-26q25-11 50-2t39 32l47 82q14 23 8 49t-27 43l-53 40q1 7 1 13.5v27q0 6.5-2 13.5l53 40q21 17 27 43t-8 49l-48 82q-14 23-39 32t-50-2l-60-26q-11 8-23 15t-24 12l-9 66q-4 26-23.5 44T527-80h-94Zm7-80h79l14-106q31-8 57.5-23.5T639-327l99 41 39-68-86-65q5-14 7-29.5t2-31.5q0-16-2-31.5t-7-29.5l86-65-39-68-99 42q-22-23-48.5-38.5T533-694l-13-106h-79l-14 106q-31 8-57.5 23.5T321-633l-99-41-39 68 86 64q-5 15-7 30t-2 32q0 16 2 31t7 30l-86 65 39 68 99-42q22 23 48.5 38.5T427-266l13 106Zm42-180q58 0 99-41t41-99q0-58-41-99t-99-41q-59 0-99.5 41T342-480q0 58 40.5 99t99.5 41Zm-2-140Z"
+              />
+            </svg>
+          </div>
+        </div>
+        <div class="scrollable-content">
+          <div class="topbar-container liquid-glass">
+            <div class="logo-container">
+              <img src="https://video.munetios.com/image.png" alt="Logo" />
+              <div class="logo-text">SuperVidPlayer</div>
+            </div>
+            <div class="search-bar liquid-glass">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="24px"
+                viewBox="0 -960 960 960"
+                width="24px"
+                fill="#e3e3e3"
+              >
+                <path
+                  d="M380-320q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l224 224q11 11 11 28t-11 28q-11 11-28 11t-28-11L532-372q-30 24-69 38t-83 14Zm0-80q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z"
+                />
+              </svg>
+              <input
+                type="text"
+                id="searchVideoInput"
+                placeholder="Search videos"
+              />
+            </div>
+            <div class="topbar-right">
+              <div class="favoritesBtn" id="favoritesBtn">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  height="24px"
+                  viewBox="0 -960 960 960"
+                  width="24px"
+                  fill="#e3e3e3"
+                >
+                  <path
+                    d="m480-240-168 72q-40 17-76-6.5T200-241v-519q0-33 23.5-56.5T280-840h400q33 0 56.5 23.5T760-760v519q0 43-36 66.5t-76 6.5l-168-72Zm0-88 200 86v-518H280v518l200-86Zm0-432H280h400-200Z"
+                  />
+                </svg>
+              </div>
+              <div class="topbarSettingsBtn" id="topbarSettingsBtn">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  height="24px"
+                  viewBox="0 -960 960 960"
+                  width="24px"
+                  fill="#e3e3e3"
+                >
+                  <path
+                    d="M433-80q-27 0-46.5-18T363-142l-9-66q-13-5-24.5-12T307-235l-62 26q-25 11-50 2t-39-32l-47-82q-14-23-8-49t27-43l53-40q-1-7-1-13.5v-27q0-6.5 1-13.5l-53-40q-21-17-27-43t8-49l47-82q14-23 39-32t50 2l62 26q11-8 23-15t24-12l9-66q4-26 23.5-44t46.5-18h94q27 0 46.5 18t23.5 44l9 66q13 5 24.5 12t22.5 15l62-26q25-11 50-2t39 32l47 82q14 23 8 49t-27 43l-53 40q1 7 1 13.5v27q0 6.5-2 13.5l53 40q21 17 27 43t-8 49l-48 82q-14 23-39 32t-50-2l-60-26q-11 8-23 15t-24 12l-9 66q-4 26-23.5 44T527-80h-94Zm7-80h79l14-106q31-8 57.5-23.5T639-327l99 41 39-68-86-65q5-14 7-29.5t2-31.5q0-16-2-31.5t-7-29.5l86-65-39-68-99 42q-22-23-48.5-38.5T533-694l-13-106h-79l-14 106q-31 8-57.5 23.5T321-633l-99-41-39 68 86 64q-5 15-7 30t-2 32q0 16 2 31t7 30l-86 65 39 68 99-42q22 23 48.5 38.5T427-266l13 106Zm42-180q58 0 99-41t41-99q0-58-41-99t-99-41q-59 0-99.5 41T342-480q0 58 40.5 99t99.5 41Zm-2-140Z"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <div class="content-container">
+            <div class="content page" id="searchVideosPage">
+              <div class="enterASearchQuery">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  height="40px"
+                  viewBox="0 -960 960 960"
+                  width="40px"
+                  fill="#e3e3e3"
+                >
+                  <path
+                    d="M380-320q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l224 224q11 11 11 28t-11 28q-11 11-28 11t-28-11L532-372q-30 24-69 38t-83 14Zm0-80q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z"
+                  />
+                </svg>
+                <p>Enter a search query to find videos</p>
+              </div>
+              <div class="searchResultsList hidden">
+                <div id="SearchResultsVideosList"></div>
+              </div>
+              <div class="noResultsFoundSearch hidden">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  height="40px"
+                  viewBox="0 -960 960 960"
+                  width="40px"
+                  fill="#e3e3e3"
+                >
+                  <path
+                    d="m280-252 56 57q6 6 14 6t14-6q6-6 6-14.5t-6-14.5l-56-56 57-57q6-6 6-14t-6-14q-6-6-14-6t-14 6l-57 57-57-57q-6-6-14-6t-14 6q-6 6-6 14t6 14l57 57-57 57q-6 6-6 14t6 14q6 6 14 6t14-6l57-57ZM138.5-138.5Q80-197 80-280t58.5-141.5Q197-480 280-480t141.5 58.5Q480-363 480-280t-58.5 141.5Q363-80 280-80t-141.5-58.5ZM568-376q-12-13-25.5-26.5T516-428q38-24 61-64t23-88q0-75-52.5-127.5T420-760q-75 0-127.5 52.5T240-580q0 6 .5 11.5T242-557q-18 2-39.5 8T164-535q-2-11-3-22t-1-23q0-109 75.5-184.5T420-840q109 0 184.5 75.5T680-580q0 43-13.5 81.5T629-428l223 224q11 11 11.5 27.5T852-148q-11 11-28 11t-28-11L568-376Z"
+                  />
+                </svg>
+                <p>No results found</p>
+              </div>
+              <div class="searchFailedVideos hidden">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  height="40px"
+                  viewBox="0 -960 960 960"
+                  width="40px"
+                  fill="#e3e3e3"
+                >
+                  <path
+                    d="M109-120q-11 0-20-5.5T75-140q-5-9-5.5-19.5T75-180l370-640q6-10 15.5-15t19.5-5q10 0 19.5 5t15.5 15l370 640q6 10 5.5 20.5T885-140q-5 9-14 14.5t-20 5.5H109Zm69-80h604L480-720 178-200Zm330.5-51.5Q520-263 520-280t-11.5-28.5Q497-320 480-320t-28.5 11.5Q440-297 440-280t11.5 28.5Q463-240 480-240t28.5-11.5Zm0-120Q520-383 520-400v-120q0-17-11.5-28.5T480-560q-17 0-28.5 11.5T440-520v120q0 17 11.5 28.5T480-360q17 0 28.5-11.5ZM480-460Z"
+                  />
+                </svg>
+                <p>Failed to load videos. Please try again.</p>
+                <button class="retry-btn liquid-glass" id="retryBtn">
+                  Retry
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="content page" id="videoWatchPage">
+            <div class="video-player-container">
+              <div class="video-player-topbar">
+                <div class="menuBtn hidden liquid-glass" id="menuBtn">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="24px"
+                    viewBox="0 -960 960 960"
+                    width="24px"
+                    fill="#e3e3e3"
+                  >
+                    <path
+                      d="M160-240q-17 0-28.5-11.5T120-280q0-17 11.5-28.5T160-320h640q17 0 28.5 11.5T840-280q0 17-11.5 28.5T800-240H160Zm0-200q-17 0-28.5-11.5T120-480q0-17 11.5-28.5T160-520h640q17 0 28.5 11.5T840-480q0 17-11.5 28.5T800-440H160Zm0-200q-17 0-28.5-11.5T120-680q0-17 11.5-28.5T160-720h640q17 0 28.5 11.5T840-680q0 17-11.5 28.5T800-640H160Z"
+                    />
+                  </svg>
+                </div>
+                <div class="videoTitle liquid-glass" id="videoTitle"></div>
+                <div class="topbar-right-video liquid-glass">
+                  <div class="favoriteVideoBtn" id="favoriteVideoBtn">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      height="24px"
+                      viewBox="0 -960 960 960"
+                      width="24px"
+                      fill="#e3e3e3"
+                    >
+                      <path
+                        d="m480-240-168 72q-40 17-76-6.5T200-241v-519q0-33 23.5-56.5T280-840h400q33 0 56.5 23.5T760-760v519q0 43-36 66.5t-76 6.5l-168-72Zm0-88 200 86v-518H280v518l200-86Zm0-432H280h400-200Z"
+                      />
+                    </svg>
+                  </div>
+                  <div class="shareVideoBtn" id="shareVideoBtn">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      height="24px"
+                      viewBox="0 -960 960 960"
+                      width="24px"
+                      fill="#e3e3e3"
+                    >
+                      <path
+                        d="M680-80q-50 0-85-35t-35-85q0-6 3-28L282-392q-16 15-37 23.5t-45 8.5q-50 0-85-35t-35-85q0-50 35-85t85-35q24 0 45 8.5t37 23.5l281-164q-2-7-2.5-13.5T560-760q0-50 35-85t85-35q50 0 85 35t35 85q0 50-35 85t-85 35q-24 0-45-8.5T598-672L317-508q2 7 2.5 13.5t.5 14.5q0 8-.5 14.5T317-452l281 164q16-15 37-23.5t45-8.5q50 0 85 35t35 85q0 50-35 85t-85 35Zm0-80q17 0 28.5-11.5T720-200q0-17-11.5-28.5T680-240q-17 0-28.5 11.5T640-200q0 17 11.5 28.5T680-160ZM200-440q17 0 28.5-11.5T240-480q0-17-11.5-28.5T200-520q-17 0-28.5 11.5T160-480q0 17 11.5 28.5T200-440Zm508.5-291.5Q720-743 720-760t-11.5-28.5Q697-800 680-800t-28.5 11.5Q640-777 640-760t11.5 28.5Q663-720 680-720t28.5-11.5ZM680-200ZM200-480Zm480-280Z"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+              <div class="video-player">
+                <video class="video">
+                  <source src="" type="video/mp4" />
+                </video>
+                <canvas
+                  class="video-render-canvas"
+                  id="videoRenderCanvas"
+                ></canvas>
+                <div class="caption-overlay hidden" id="captionOverlay"></div>
+                <div class="video-controls liquid-glass">
+                  <div class="video-controls-left">
+                    <div class="play-btn" id="playPauseBtn">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        height="24px"
+                        viewBox="0 -960 960 960"
+                        width="24px"
+                        fill="#e3e3e3"
+                      >
+                        <path
+                          d="M320-273v-414q0-17 12-28.5t28-11.5q5 0 10.5 1.5T381-721l326 207q9 6 13.5 15t4.5 19q0 10-4.5 19T707-446L381-239q-5 3-10.5 4.5T360-233q-16 0-28-11.5T320-273Zm80-207Zm0 134 210-134-210-134v268Z"
+                        />
+                      </svg>
+                    </div>
+                    <div class="volume-btn" id="volumeBtnMute">
+                      <div class="volume-up">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          height="24px"
+                          viewBox="0 -960 960 960"
+                          width="24px"
+                          fill="#e3e3e3"
+                        >
+                          <path
+                            d="M760-481q0-83-44-151.5T598-735q-15-7-22-21.5t-2-29.5q6-16 21.5-23t31.5 0q97 43 155 131.5T840-481q0 108-58 196.5T627-153q-16 7-31.5 0T574-176q-5-15 2-29.5t22-21.5q74-34 118-102.5T760-481ZM280-360H160q-17 0-28.5-11.5T120-400v-160q0-17 11.5-28.5T160-600h120l132-132q19-19 43.5-8.5T480-703v446q0 27-24.5 37.5T412-228L280-360Zm380-120q0 42-19 79.5T591-339q-10 6-20.5.5T560-356v-250q0-12 10.5-17.5t20.5.5q31 25 50 63t19 80ZM400-606l-86 86H200v80h114l86 86v-252ZM300-480Z"
+                          />
+                        </svg>
+                      </div>
+                      <div class="volume-down hidden">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          height="24px"
+                          viewBox="0 -960 960 960"
+                          width="24px"
+                          fill="#e3e3e3"
+                        >
+                          <path
+                            d="M360-360H240q-17 0-28.5-11.5T200-400v-160q0-17 11.5-28.5T240-600h120l132-132q19-19 43.5-8.5T560-703v446q0 27-24.5 37.5T492-228L360-360Zm380-120q0 42-19 79.5T671-339q-10 6-20.5.5T640-356v-250q0-12 10.5-17.5t20.5.5q31 25 50 63t19 80ZM480-606l-86 86H280v80h114l86 86v-252ZM380-480Z"
+                          />
+                        </svg>
+                      </div>
+                      <div class="volume-mute hidden">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          height="24px"
+                          viewBox="0 -960 960 960"
+                          width="24px"
+                          fill="#e3e3e3"
+                        >
+                          <path
+                            d="M671-177q-11 7-22 13t-23 11q-15 7-30.5 0T574-176q-6-15 1.5-29.5T598-227q4-2 7.5-4t7.5-4L480-368v111q0 27-24.5 37.5T412-228L280-360H160q-17 0-28.5-11.5T120-400v-160q0-17 11.5-28.5T160-600h88L84-764q-11-11-11-28t11-28q11-11 28-11t28 11l680 680q11 11 11 28t-11 28q-11 11-28 11t-28-11l-93-93Zm89-304q0-83-44-151.5T598-735q-15-7-22-21.5t-2-29.5q6-16 21.5-23t31.5 0q97 43 155 131t58 197q0 33-6 65.5T817-353q-8 22-24.5 27.5t-30.5.5q-14-5-22.5-18t-.5-30q11-26 16-52.5t5-55.5ZM591-623q33 21 51 63t18 80v10q0 5-1 10-2 13-14 17t-22-6l-51-51q-6-6-9-13.5t-3-15.5v-77q0-12 10.5-17.5t20.5.5Zm-201-59q-6-6-6-14t6-14l22-22q19-19 43.5-8.5T480-703v63q0 14-12 19t-22-5l-56-56Zm10 328v-94l-72-72H200v80h114l86 86Zm-36-130Z"
+                          />
+                        </svg>
+                      </div>
+                      <div class="volume-slider hidden">
+                        <input
+                          type="range"
+                          id="volumeSlider"
+                          min="0"
+                          max="100"
+                          value="100"
+                        />
+                        <div class="volume-value" id="volumeValue">100%</div>
+                      </div>
+                    </div>
+                    <div class="video-timestamp" id="videoTimestamp">
+                      0:00 / 0:00
+                    </div>
+                  </div>
+                  <div class="video-controls-timeSlider">
+                    <input
+                      type="range"
+                      id="timeSlider"
+                      min="0"
+                      max="100"
+                      value="0"
+                    />
+                  </div>
+                  <div class="video-controls-right">
+                    <div class="pipBtn" id="pipBtn" title="Picture in Picture">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        height="24px"
+                        viewBox="0 -960 960 960"
+                        width="24px"
+                        fill="#e3e3e3"
+                      >
+                        <path
+                          d="M120-520q-17 0-28.5-11.5T80-560q0-17 11.5-28.5T120-600h104L80-743q-12-12-12-28.5T80-800q12-12 28.5-12t28.5 12l143 144v-104q0-17 11.5-28.5T320-800q17 0 28.5 11.5T360-760v200q0 17-11.5 28.5T320-520H120Zm40 360q-33 0-56.5-23.5T80-240v-160q0-17 11.5-28.5T120-440q17 0 28.5 11.5T160-400v160h280q17 0 28.5 11.5T480-200q0 17-11.5 28.5T440-160H160Zm651.5-291.5Q800-463 800-480v-240H480q-17 0-28.5-11.5T440-760q0-17 11.5-28.5T480-800h320q33 0 56.5 23.5T880-720v240q0 17-11.5 28.5T840-440q-17 0-28.5-11.5ZM600-160q-17 0-28.5-11.5T560-200v-120q0-17 11.5-28.5T600-360h240q17 0 28.5 11.5T880-320v120q0 17-11.5 28.5T840-160H600Z"
+                        />
+                      </svg>
+                    </div>
+                    <div
+                      class="settingsBtn"
+                      id="videoControlsSettingsBtn"
+                      title="Settings"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        height="24px"
+                        viewBox="0 -960 960 960"
+                        width="24px"
+                        fill="#e3e3e3"
+                      >
+                        <path
+                          d="M433-80q-27 0-46.5-18T363-142l-9-66q-13-5-24.5-12T307-235l-62 26q-25 11-50 2t-39-32l-47-82q-14-23-8-49t27-43l53-40q-1-7-1-13.5v-27q0-6.5 1-13.5l-53-40q-21-17-27-43t8-49l47-82q14-23 39-32t50 2l62 26q11-8 23-15t24-12l9-66q4-26 23.5-44t46.5-18h94q27 0 46.5 18t23.5 44l9 66q13 5 24.5 12t22.5 15l62-26q25-11 50-2t39 32l47 82q14 23 8 49t-27 43l-53 40q1 7 1 13.5v27q0 6.5-2 13.5l53 40q21 17 27 43t-8 49l-48 82q-14 23-39 32t-50-2l-60-26q-11 8-23 15t-24 12l-9 66q-4 26-23.5 44T527-80h-94Zm7-80h79l14-106q31-8 57.5-23.5T639-327l99 41 39-68-86-65q5-14 7-29.5t2-31.5q0-16-2-31.5t-7-29.5l86-65-39-68-99 42q-22-23-48.5-38.5T533-694l-13-106h-79l-14 106q-31 8-57.5 23.5T321-633l-99-41-39 68 86 64q-5 15-7 30t-2 32q0 16 2 31t7 30l-86 65 39 68 99-42q22 23 48.5 38.5T427-266l13 106Zm42-180q58 0 99-41t41-99q0-58-41-99t-99-41q-59 0-99.5 41T342-480q0 58 40.5 99t99.5 41Zm-2-140Z"
+                        ></path>
+                      </svg>
+                    </div>
+                    <div class="captionsBtn" id="captionsBtn">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        height="24px"
+                        viewBox="0 -960 960 960"
+                        width="24px"
+                        fill="#e3e3e3"
+                      >
+                        <path
+                          d="M200-160q-33 0-56.5-23.5T120-240v-480q0-33 23.5-56.5T200-800h560q33 0 56.5 23.5T840-720v480q0 33-23.5 56.5T760-160H200Zm0-80h560v-480H200v480Zm80-120h120q17 0 28.5-11.5T440-400v-20q0-9-6-15t-15-6h-18q-9 0-15 6t-6 15h-80v-120h80q0 9 6 15t15 6h18q9 0 15-6t6-15v-20q0-17-11.5-28.5T400-600H280q-17 0-28.5 11.5T240-560v160q0 17 11.5 28.5T280-360Zm400-240H560q-17 0-28.5 11.5T520-560v160q0 17 11.5 28.5T560-360h120q17 0 28.5-11.5T720-400v-20q0-9-6-15t-15-6h-18q-9 0-15 6t-6 15h-80v-120h80q0 9 6 15t15 6h18q9 0 15-6t6-15v-20q0-17-11.5-28.5T680-600ZM200-240v-480 480Z"
+                        />
+                      </svg>
+                    </div>
+                    <div class="fullscreenBtn" id="fullscreenBtn">
+                      <div class="fullscreen-btn">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          height="24px"
+                          viewBox="0 -960 960 960"
+                          width="24px"
+                          fill="#e3e3e3"
+                        >
+                          <path
+                            d="M200-200h80q17 0 28.5 11.5T320-160q0 17-11.5 28.5T280-120H160q-17 0-28.5-11.5T120-160v-120q0-17 11.5-28.5T160-320q17 0 28.5 11.5T200-280v80Zm560 0v-80q0-17 11.5-28.5T800-320q17 0 28.5 11.5T840-280v120q0 17-11.5 28.5T800-120H680q-17 0-28.5-11.5T640-160q0-17 11.5-28.5T680-200h80ZM200-760v80q0 17-11.5 28.5T160-640q-17 0-28.5-11.5T120-680v-120q0-17 11.5-28.5T160-840h120q17 0 28.5 11.5T320-800q0 17-11.5 28.5T280-760h-80Zm560 0h-80q-17 0-28.5-11.5T640-800q0-17 11.5-28.5T680-840h120q17 0 28.5 11.5T840-800v120q0 17-11.5 28.5T800-640q-17 0-28.5-11.5T760-680v-80Z"
+                          />
+                        </svg>
+                      </div>
+                      <div class="exitFullscreenBtn hidden">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          height="24px"
+                          viewBox="0 -960 960 960"
+                          width="24px"
+                          fill="#e3e3e3"
+                        >
+                          <path
+                            d="M240-240h-80q-17 0-28.5-11.5T120-280q0-17 11.5-28.5T160-320h120q17 0 28.5 11.5T320-280v120q0 17-11.5 28.5T280-120q-17 0-28.5-11.5T240-160v-80Zm480 0v80q0 17-11.5 28.5T680-120q-17 0-28.5-11.5T640-160v-120q0-17 11.5-28.5T680-320h120q17 0 28.5 11.5T840-280q0 17-11.5 28.5T800-240h-80ZM240-720v-80q0-17 11.5-28.5T280-840q17 0 28.5 11.5T320-800v120q0 17-11.5 28.5T280-640H160q-17 0-28.5-11.5T120-680q0-17 11.5-28.5T160-720h80Zm480 0h80q17 0 28.5 11.5T840-680q0 17-11.5 28.5T800-640H680q-17 0-28.5-11.5T640-680v-120q0-17 11.5-28.5T680-840q17 0 28.5 11.5T720-800v80Z"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="video-settingsWrapper liquid-glass hidden"
+      id="videoSettingsWrapper"
+    >
+      <div class="video-settingsWrapperItem" id="videoQuailityBtn">
+        <div class="video-quailityValue">Auto</div>
+        <div class="changeVideoQuailityIcon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="24px"
+            viewBox="0 -960 960 960"
+            width="24px"
+            fill="#e3e3e3"
+          >
+            <path
+              d="M504-480 348-636q-11-11-11-28t11-28q11-11 28-11t28 11l184 184q6 6 8.5 13t2.5 15q0 8-2.5 15t-8.5 13L404-268q-11 11-28 11t-28-11q-11-11-11-28t11-28l156-156Z"
+            />
+          </svg>
+        </div>
+      </div>
+      <div class="video-settingsWrapperItem" id="loopVideoToggle">
+        <div class="loopVideoToggleIcon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="24px"
+            viewBox="0 -960 960 960"
+            width="24px"
+            fill="#e3e3e3"
+          >
+            <path
+              d="m274-200 34 34q12 12 11.5 28T308-110q-12 12-28.5 12.5T251-109L148-212q-6-6-8.5-13t-2.5-15q0-8 2.5-15t8.5-13l103-103q12-12 28.5-11.5T308-370q11 12 11.5 28T308-314l-34 34h406v-120q0-17 11.5-28.5T720-440q17 0 28.5 11.5T760-400v120q0 33-23.5 56.5T680-200H274Zm412-480H280v120q0 17-11.5 28.5T240-520q-17 0-28.5-11.5T200-560v-120q0-33 23.5-56.5T280-760h406l-34-34q-12-12-11.5-28t11.5-28q12-12 28.5-12.5T709-851l103 103q6 6 8.5 13t2.5 15q0 8-2.5 15t-8.5 13L709-589q-12 12-28.5 11.5T652-590q-11-12-11.5-28t11.5-28l34-34Z"
+            />
+          </svg>
+        </div>
+        <div class="loopVideoToggleText">Loop</div>
+        <div class="custom-toggle-trigger">
+          <input type="checkbox" id="loopVideoToggleInput" />
+        </div>
+      </div>
+      <div class="video-settingsWrapperItem" id="playbackSpeedBtn">
+        <div class="playbackSpeedBtnIcon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="24px"
+            viewBox="0 -960 960 960"
+            width="24px"
+            fill="#e3e3e3"
+          >
+            <path
+              d="m426-330 195-125q14-9 14-25t-14-25L426-630q-15-10-30.5-1.5T380-605v250q0 18 15.5 26.5T426-330ZM121-440q17 0 30.5 11t18.5 28q6 23 14.5 43.5T204-317q9 15 7.5 32T198-256q-11 11-27 10t-25-14q-22-31-37-66.5T86-400q-3-16 7.5-28t27.5-12Zm77-264q12 12 13 29t-7 31q-11 20-19.5 41T170-559q-5 17-18.5 28T121-520q-17 0-27.5-12.5T87-561q8-38 23-73.5t36-66.5q9-13 25-13.5t27 10.5Zm56 505q12-13 29.5-14t32.5 8q20 11 40.5 20t42.5 15q17 5 28 18t11 30q0 17-12.5 27T397-88q-38-8-71.5-23T260-146q-14-9-15.5-25t9.5-28Zm186-639q0 17-10.5 30T402-790q-23 6-44 14.5T317-755q-15 9-32.5 7.5T255-761q-12-12-10.5-28.5T260-815q32-20 66.5-34.5T399-872q16-3 28.5 7t12.5 27Zm360 358q0-113-69.5-199.5T553-792q-15-4-24-17t-9-29q0-16 11-26.5t25-7.5q140 28 232 137t92 255q0 146-92 255T556-88q-14 3-25-7.5T520-122q0-16 9-29t24-17q108-26 177.5-112.5T800-480Z"
+            />
+          </svg>
+        </div>
+        <div class="playbackSpeedValue">1x</div>
+        <div class="changeSpeedIcon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="24px"
+            viewBox="0 -960 960 960"
+            width="24px"
+            fill="#e3e3e3"
+          >
+            <path
+              d="M504-480 348-636q-11-11-11-28t11-28q11-11 28-11t28 11l184 184q6 6 8.5 13t2.5 15q0 8-2.5 15t-8.5 13L404-268q-11 11-28 11t-28-11q-11-11-11-28t11-28l156-156Z"
+            />
+          </svg>
+        </div>
+      </div>
+    </div>
+    <div class="dropdown-wrapper liquid-glass hidden" id="videoQuailityWrapper">
+      <div class="dropdown-item selected" data-value="Auto">Auto</div>
+      <div class="dropdown-item" data-value="1440p">1440p</div>
+      <div class="dropdown-item" data-value="1080p">1080p</div>
+      <div class="dropdown-item" data-value="720p">720p</div>
+      <div class="dropdown-item" data-value="480p">480p</div>
+      <div class="dropdown-item" data-value="240p">240p</div>
+      <div class="dropdown-item" data-value="144p">144p</div>
+    </div>
+    <div class="dropdown-wrapper liquid-glass hidden" id="videoSpeedWrapper">
+      <div class="dropdown-item" data-value="0.25">0.25x</div>
+      <div class="dropdown-item" data-value="0.5">0.5x</div>
+      <div class="dropdown-item" data-value="0.75">0.75x</div>
+      <div class="dropdown-item selected" data-value="1">1x</div>
+      <div class="dropdown-item" data-value="1.25">1.25x</div>
+      <div class="dropdown-item" data-value="1.5">1.5x</div>
+      <div class="dropdown-item" data-value="1.75">1.75x</div>
+      <div class="dropdown-item" data-value="2">2x</div>
+      <div class="dropdown-item" data-value="4">4x</div>
+      <div class="dropdown-item" data-value="5">5x</div>
+      <div class="dropdown-item" data-value="8">8x</div>
+      <div class="dropdown-item" data-value="10">10x</div>
+      <div class="dropdown-item" data-value="16">16x</div>
+
+      <div class="dropdown-toggle" id="changeAudioPitchToggle">
+        <div class="dropdown-toggle-text">Change Audio Pitch</div>
+        <div class="custom-toggle-trigger">
+          <input type="checkbox" id="changeAudioPitchToggleInput" />
+        </div>
+      </div>
+    </div>
+    <div class="modal" id="shareVideoModal">
+      <div class="modal-content liquid-glass">
+        <div class="modal-header">
+          <div class="modal-headerText">Share Video</div>
+          <div class="modal-close" id="shareModalClose">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="24px"
+              viewBox="0 -960 960 960"
+              width="24px"
+              fill="#e3e3e3"
+            >
+              <path
+                d="M480-424 284-228q-11 11-28 11t-28-11q-11-11-11-28t11-28l196-196-196-196q-11-11-11-28t11-28q11-11 28-11t28 11l196 196 196-196q11-11 28-11t28 11q11 11 11 28t-11 28L536-480l196 196q11 11 11 28t-11 28q-11 11-28 11t-28-11L480-424Z"
+              />
+            </svg>
+          </div>
+        </div>
+        <div class="modal-body">
+          <div class="loading-share"></div>
+          <div class="shareOptions" id="shareModalOptions"></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal" id="settingsModal">
+      <div class="modal-content settings-modal-content liquid-glass">
+        <div class="modal-header">
+          <div class="modal-headerText" data-i18n="settingsTitle">Settings</div>
+          <div class="modal-close" id="settingsModalClose">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="24px"
+              viewBox="0 -960 960 960"
+              width="24px"
+              fill="#e3e3e3"
+            >
+              <path
+                d="M480-424 284-228q-11 11-28 11t-28-11q-11-11-11-28t11-28l196-196-196-196q-11-11-11-28t11-28q11-11 28-11t28 11l196 196 196-196q11-11 28-11t28 11q11 11 11 28t-11 28L536-480l196 196q11 11 11 28t-11 28q-11 11-28 11t-28-11L480-424Z"
+              />
+            </svg>
+          </div>
+        </div>
+        <div class="modal-body">
+          <div class="settings-panel">
+            <div class="setting-row">
+              <div class="setting-label">
+                <span data-i18n="theme">Theme</span>
+                <span class="setting-help" data-i18n="themeHelp"
+                  >Choose the app appearance.</span
+                >
+              </div>
+              <div class="custom-dropdown" data-setting-dropdown="theme"></div>
+            </div>
+            <div class="setting-row">
+              <div class="setting-label">
+                <span data-i18n="language">Language</span>
+                <span class="setting-help" data-i18n="languageHelp"
+                  >Choose display language.</span
+                >
+              </div>
+              <div
+                class="custom-dropdown"
+                data-setting-dropdown="language"
+              ></div>
+            </div>
+            <div class="setting-row">
+              <div class="setting-label">
+                <span data-i18n="loopDefault">Loop video by default</span>
+                <span class="setting-help" data-i18n="loopDefaultHelp"
+                  >New videos will keep loop enabled.</span
+                >
+              </div>
+              <div class="custom-toggle-trigger">
+                <input type="checkbox" id="defaultLoopToggleInput" />
+              </div>
+            </div>
+            <div class="settings-action-grid">
+              <button
+                class="settings-action-btn liquid-glass"
+                id="clearCacheBtn"
+                type="button"
+                data-i18n="clearCache"
+              >
+                Clear cache
+              </button>
+              <button
+                class="settings-action-btn liquid-glass"
+                id="resetPreferencesBtn"
+                type="button"
+                data-i18n="resetPreferences"
+              >
+                Reset Preferences
+              </button>
+              <button
+                class="settings-action-btn liquid-glass"
+                id="deleteEverythingBtn"
+                type="button"
+                data-i18n="deleteEverything"
+              >
+                Delete everything
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script nonce="WE237DJn3ojd83janx">
+      const videos = [
+        {
+          id: "intro-search",
+          title: "Introducing munetios new search",
+          file: "videos/Introducing munetios new search.mp4",
+          duration: "0:28",
+          quality: "1080p",
+          description: "A local preview of Munetios search improvements.",
+        },
+        {
+          id: "calendar-3",
+          title: "Introducing Munetios Calendar 3",
+          file: "videos/Introducing Munetios Calendar 3.mp4",
+          duration: "0:32",
+          quality: "1080p",
+          description: "Calendar 3 announcement and product preview.",
+        },
+        {
+          id: "omniwrite-improved",
+          title: "OmniWrite got improved",
+          file: "videos/OmniWrite got improved.mp4",
+          duration: "0:24",
+          quality: "1080p",
+          description: "A quick look at OmniWrite improvements.",
+        },
+        {
+          id: "munetios-omniwrite",
+          title: "Munetios OmniWrite",
+          file: "videos/Munetios OmniWrite.mp4",
+          duration: "0:34",
+          quality: "1080p",
+          description: "Munetios OmniWrite local feature video.",
+        },
+        {
+          id: "google-alternative",
+          title: "Google Alternative video",
+          file: "videos/Google Alternative video.mp4",
+          duration: "0:22",
+          quality: "1080p",
+          description: "Privacy-first search alternative preview.",
+        },
+        {
+          id: "chrome-settings",
+          title: "Change 6 chrome settings",
+          file: "videos/Change 6 chrome settings.mp4",
+          duration: "0:44",
+          quality: "1080p",
+          description: "A short local tutorial video.",
+        },
+        {
+          id: "race",
+          title: "Race",
+          file: "videos/race.mp4",
+          duration: "0:18",
+          quality: "720p",
+          description: "Local sample race clip.",
+        },
+        {
+          id: "sample-video",
+          title: "Calendar How To",
+          file: "videos/video.mp4",
+          duration: "0:20",
+          quality: "720p",
+          description: "A short local tutorial video.",
+        },
+        {
+          id: "minecraft-video",
+          title: "Minecraft Gameplay",
+          file: "videos/minecraftSkyGen.mp4",
+          duration: "0:30",
+          quality: "720p",
+          description: "A short local Minecraft gameplay video.",
+        },
+      ];
+
+      const SETTINGS_KEY = "superVidPlayerSettings";
+      const BOOKMARK_DB = "SuperVidPlayerBookmarks";
+      const BOOKMARK_STORE = "bookmarks";
+      const searchInput = document.getElementById("searchVideoInput");
+      const searchVideosBtn = document.getElementById("searchVideosBtn");
+      const sidebarSettingsBtn = document.getElementById("sidebarSettingsBtn");
+      const topbarSettingsBtn = document.getElementById("topbarSettingsBtn");
+      const favoritesBtn = document.getElementById("favoritesBtn");
+      const searchVideosPage = document.getElementById("searchVideosPage");
+      const videoWatchPage = document.getElementById("videoWatchPage");
+      const enterSearch = document.querySelector(".enterASearchQuery");
+      const searchResultsList = document.querySelector(".searchResultsList");
+      const noResultsFound = document.querySelector(".noResultsFoundSearch");
+      const searchFailed = document.querySelector(".searchFailedVideos");
+      const resultsTarget = document.getElementById("SearchResultsVideosList");
+      const retryBtn = document.getElementById("retryBtn");
+      const videoPlayer = document.querySelector(".video-player");
+      const videoPlayerContainer = document.querySelector(
+        ".video-player-container",
+      );
+      const video = document.querySelector(".video");
+      const videoSource = video.querySelector("source");
+      const renderCanvas = document.getElementById("videoRenderCanvas");
+      const renderContext = renderCanvas.getContext("2d");
+      const captionOverlay = document.getElementById("captionOverlay");
+      const videoTitle = document.getElementById("videoTitle");
+      const playPauseBtn = document.getElementById("playPauseBtn");
+      const timeSlider = document.getElementById("timeSlider");
+      const videoTimestamp = document.getElementById("videoTimestamp");
+      const volumeBtn = document.getElementById("volumeBtnMute");
+      const volumeSlider = document.getElementById("volumeSlider");
+      const volumeValue = document.getElementById("volumeValue");
+      const volumeUp = document.querySelector(".volume-up");
+      const volumeDown = document.querySelector(".volume-down");
+      const volumeMute = document.querySelector(".volume-mute");
+      const volumePanel = document.querySelector(".volume-slider");
+      const favoriteVideoBtn = document.getElementById("favoriteVideoBtn");
+      const shareVideoBtn = document.getElementById("shareVideoBtn");
+      const pipBtn = document.getElementById("pipBtn");
+      const videoControlsSettingsBtn = document.getElementById(
+        "videoControlsSettingsBtn",
+      );
+      const captionsBtn = document.getElementById("captionsBtn");
+      const fullscreenBtn = document.getElementById("fullscreenBtn");
+      const fullscreenIcon = document.querySelector(".fullscreen-btn");
+      const exitFullscreenIcon = document.querySelector(".exitFullscreenBtn");
+      const videoSettingsWrapper = document.getElementById(
+        "videoSettingsWrapper",
+      );
+      const videoQuailityBtn = document.getElementById("videoQuailityBtn");
+      const videoQuailityWrapper = document.getElementById(
+        "videoQuailityWrapper",
+      );
+      const videoSpeedWrapper = document.getElementById("videoSpeedWrapper");
+      const playbackSpeedBtn = document.getElementById("playbackSpeedBtn");
+      const loopVideoToggle = document.getElementById("loopVideoToggle");
+      const loopVideoToggleInput = document.getElementById(
+        "loopVideoToggleInput",
+      );
+      const changeAudioPitchToggle = document.getElementById(
+        "changeAudioPitchToggle",
+      );
+      const changeAudioPitchToggleInput = document.getElementById(
+        "changeAudioPitchToggleInput",
+      );
+      const qualityValue = document.querySelector(".video-quailityValue");
+      const playbackSpeedValue = document.querySelector(".playbackSpeedValue");
+      const shareVideoModal = document.getElementById("shareVideoModal");
+      const shareModalClose = document.getElementById("shareModalClose");
+      const loadingShare = document.querySelector(".loading-share");
+      const shareModalOptions = document.getElementById("shareModalOptions");
+      const settingsModal = document.getElementById("settingsModal");
+      const settingsModalClose = document.getElementById("settingsModalClose");
+      const defaultLoopToggleInput = document.getElementById(
+        "defaultLoopToggleInput",
+      );
+      const clearCacheBtn = document.getElementById("clearCacheBtn");
+      const resetPreferencesBtn = document.getElementById(
+        "resetPreferencesBtn",
+      );
+      const deleteEverythingBtn = document.getElementById(
+        "deleteEverythingBtn",
+      );
+      let currentVideo = videos[0];
+      let favorites = [];
+      let showingFavorites = false;
+      let lastVolume = 1;
+      let routeIsUpdating = false;
+      let controlsTimer = 0;
+      let captionsEnabled = false;
+      let playerSettings;
+      let renderFrameId = 0;
+
+      const qualitySizes = {
+        "144p": [256, 144],
+        "240p": [426, 240],
+        "480p": [854, 480],
+        "720p": [1280, 720],
+        "1080p": [1920, 1080],
+        "1440p": [2560, 1440],
+      };
+
+      const languagePacks = {
+        en: {
+          label: "English",
+          search: "Search videos",
+          settingsTitle: "Settings",
+          theme: "Theme",
+          themeHelp: "Choose the app appearance.",
+          language: "Language",
+          languageHelp: "Choose display language.",
+          loopDefault: "Loop video by default",
+          loopDefaultHelp: "New videos will keep loop enabled.",
+          clearCache: "Clear cache",
+          resetPreferences: "Reset Preferences",
+          deleteEverything: "Delete everything",
+        },
+        es: {
+          label: "Español",
+          search: "Buscar videos",
+          settingsTitle: "Configuración",
+          theme: "Tema",
+          themeHelp: "Elige la apariencia de la app.",
+          language: "Idioma",
+          languageHelp: "Elige el idioma de la interfaz.",
+          loopDefault: "Repetir video por defecto",
+          loopDefaultHelp: "Los videos nuevos mantendrán la repetición.",
+          clearCache: "Borrar caché",
+          resetPreferences: "Restablecer preferencias",
+          deleteEverything: "Eliminar todo",
+        },
+        fr: {
+          label: "Français",
+          search: "Rechercher des vidéos",
+          settingsTitle: "Paramètres",
+          theme: "Thème",
+          themeHelp: "Choisir l'apparence de l'app.",
+          language: "Langue",
+          languageHelp: "Choisir la langue d'affichage.",
+          loopDefault: "Lire en boucle par défaut",
+          loopDefaultHelp: "Les nouvelles vidéos garderont la boucle.",
+          clearCache: "Vider le cache",
+          resetPreferences: "Réinitialiser",
+          deleteEverything: "Tout supprimer",
+        },
+        de: {
+          label: "Deutsch",
+          search: "Videos suchen",
+          settingsTitle: "Einstellungen",
+          theme: "Design",
+          themeHelp: "Wähle das Erscheinungsbild.",
+          language: "Sprache",
+          languageHelp: "Wähle die Anzeigesprache.",
+          loopDefault: "Video standardmäßig wiederholen",
+          loopDefaultHelp: "Neue Videos behalten die Wiederholung.",
+          clearCache: "Cache leeren",
+          resetPreferences: "Einstellungen zurücksetzen",
+          deleteEverything: "Alles löschen",
+        },
+        pt: {
+          label: "Português",
+          search: "Pesquisar vídeos",
+          settingsTitle: "Configurações",
+          theme: "Tema",
+          themeHelp: "Escolha a aparência do app.",
+          language: "Idioma",
+          languageHelp: "Escolha o idioma exibido.",
+          loopDefault: "Repetir vídeo por padrão",
+          loopDefaultHelp: "Novos vídeos manterão a repetição.",
+          clearCache: "Limpar cache",
+          resetPreferences: "Redefinir preferências",
+          deleteEverything: "Excluir tudo",
+        },
+        ja: {
+          label: "日本語",
+          search: "動画を検索",
+          settingsTitle: "設定",
+          theme: "テーマ",
+          themeHelp: "アプリの外観を選択します。",
+          language: "言語",
+          languageHelp: "表示言語を選択します。",
+          loopDefault: "既定でループ再生",
+          loopDefaultHelp: "新しい動画でループを維持します。",
+          clearCache: "キャッシュを削除",
+          resetPreferences: "設定をリセット",
+          deleteEverything: "すべて削除",
+        },
+        zh: {
+          label: "中文",
+          search: "搜索视频",
+          settingsTitle: "设置",
+          theme: "主题",
+          themeHelp: "选择应用外观。",
+          language: "语言",
+          languageHelp: "选择显示语言。",
+          loopDefault: "默认循环播放",
+          loopDefaultHelp: "新视频会保持循环。",
+          clearCache: "清除缓存",
+          resetPreferences: "重置偏好",
+          deleteEverything: "删除全部",
+        },
+      };
+
+      const themeOptions = [
+        { value: "dark", label: "Dark" },
+        { value: "light", label: "Light" },
+      ];
+
+      playerSettings = loadPlayerSettings();
+
+      const icons = {
+        play: "M320-273v-414q0-17 12-28.5t28-11.5q5 0 10.5 1.5T381-721l326 207q9 6 13.5 15t4.5 19q0 10-4.5 19T707-446L381-239q-5 3-10.5 4.5T360-233q-16 0-28-11.5T320-273Zm80-207Zm0 134 210-134-210-134v268Z",
+        pause:
+          "M360-240q-17 0-28.5-11.5T320-280v-400q0-17 11.5-28.5T360-720q17 0 28.5 11.5T400-680v400q0 17-11.5 28.5T360-240Zm240 0q-17 0-28.5-11.5T560-280v-400q0-17 11.5-28.5T600-720q17 0 28.5 11.5T640-680v400q0 17-11.5 28.5T600-240Z",
+      };
+
+      function loadPlayerSettings() {
+        try {
+          const saved = JSON.parse(localStorage.getItem(SETTINGS_KEY) || "{}");
+          return {
+            quality: saved.quality || "Auto",
+            speed: Number(saved.speed || 1),
+            loop: Boolean(saved.loop),
+            changePitch: Boolean(saved.changePitch),
+            volume: Number.isFinite(Number(saved.volume))
+              ? Number(saved.volume)
+              : 1,
+            muted: Boolean(saved.muted),
+            captions: Boolean(saved.captions),
+            theme: saved.theme === "light" ? "light" : "dark",
+            language: languagePacks[saved.language] ? saved.language : "en",
+            loopDefault: Boolean(saved.loopDefault),
+          };
+        } catch {
+          return {
+            quality: "Auto",
+            speed: 1,
+            loop: false,
+            changePitch: false,
+            volume: 1,
+            muted: false,
+            captions: false,
+            theme: "dark",
+            language: "en",
+            loopDefault: false,
+          };
+        }
+      }
+
+      function savePlayerSettings() {
+        localStorage.setItem(SETTINGS_KEY, JSON.stringify(playerSettings));
+      }
+
+      function applyTheme() {
+        document.body.classList.toggle(
+          "light",
+          playerSettings.theme === "light",
+        );
+      }
+
+      function applyLanguage() {
+        const pack = languagePacks[playerSettings.language] || languagePacks.en;
+        searchInput.placeholder = pack.search;
+        document.querySelectorAll("[data-i18n]").forEach((element) => {
+          const key = element.dataset.i18n;
+          if (pack[key]) {
+            element.textContent = pack[key];
+          }
+        });
+        renderSettingsDropdowns();
+      }
+
+      function renderCustomDropdown(target, options, value, onChange) {
+        const selected =
+          options.find((option) => option.value === value) || options[0];
+        target.innerHTML = `
+          <button class="custom-dropdown-trigger liquid-glass" type="button">
+            <span>${selected.label}</span>
+            <span>v</span>
+          </button>
+          <div class="custom-dropdown-menu hidden">
+            ${options
+              .map(
+                (option) =>
+                  `<button class="custom-dropdown-option${option.value === value ? " active" : ""}" type="button" data-value="${option.value}">${option.label}</button>`,
+              )
+              .join("")}
+          </div>
+        `;
+        const trigger = target.querySelector(".custom-dropdown-trigger");
+        const menu = target.querySelector(".custom-dropdown-menu");
+        trigger.addEventListener("click", () => {
+          document.querySelectorAll(".custom-dropdown-menu").forEach((item) => {
+            if (item !== menu) {
+              item.classList.add("hidden");
+            }
+          });
+          menu.classList.toggle("hidden");
+        });
+        menu.querySelectorAll(".custom-dropdown-option").forEach((option) => {
+          option.addEventListener("click", () => {
+            onChange(option.dataset.value);
+            menu.classList.add("hidden");
+          });
+        });
+      }
+
+      function renderSettingsDropdowns() {
+        const themeTarget = document.querySelector(
+          '[data-setting-dropdown="theme"]',
+        );
+        const languageTarget = document.querySelector(
+          '[data-setting-dropdown="language"]',
+        );
+        renderCustomDropdown(
+          themeTarget,
+          themeOptions,
+          playerSettings.theme,
+          (value) => {
+            playerSettings.theme = value;
+            applyTheme();
+            savePlayerSettings();
+            renderSettingsDropdowns();
+          },
+        );
+        renderCustomDropdown(
+          languageTarget,
+          Object.entries(languagePacks).map(([value, pack]) => ({
+            value,
+            label: pack.label,
+          })),
+          playerSettings.language,
+          (value) => {
+            playerSettings.language = value;
+            savePlayerSettings();
+            applyLanguage();
+          },
+        );
+      }
+
+      function openBookmarksDB() {
+        return new Promise((resolve, reject) => {
+          if (!("indexedDB" in window)) {
+            reject(new Error("IndexedDB unavailable"));
+            return;
+          }
+
+          const request = indexedDB.open(BOOKMARK_DB, 1);
+          request.onupgradeneeded = () => {
+            const db = request.result;
+            if (!db.objectStoreNames.contains(BOOKMARK_STORE)) {
+              db.createObjectStore(BOOKMARK_STORE, { keyPath: "id" });
+            }
+          };
+          request.onsuccess = () => resolve(request.result);
+          request.onerror = () => reject(request.error);
+        });
+      }
+
+      async function readBookmarks() {
+        try {
+          const db = await openBookmarksDB();
+          return await new Promise((resolve, reject) => {
+            const transaction = db.transaction(BOOKMARK_STORE, "readonly");
+            const store = transaction.objectStore(BOOKMARK_STORE);
+            const request = store.getAll();
+            request.onsuccess = () => {
+              resolve(request.result.map((bookmark) => bookmark.id));
+              db.close();
+            };
+            request.onerror = () => {
+              reject(request.error);
+              db.close();
+            };
+          });
+        } catch {
+          try {
+            return JSON.parse(
+              localStorage.getItem("superVidBookmarks") || "[]",
+            );
+          } catch {
+            return [];
+          }
+        }
+      }
+
+      async function setBookmark(videoItem, enabled) {
+        try {
+          const db = await openBookmarksDB();
+          await new Promise((resolve, reject) => {
+            const transaction = db.transaction(BOOKMARK_STORE, "readwrite");
+            const store = transaction.objectStore(BOOKMARK_STORE);
+            const request = enabled
+              ? store.put({
+                  id: videoItem.id,
+                  title: videoItem.title,
+                  file: videoItem.file,
+                  savedAt: new Date().toISOString(),
+                })
+              : store.delete(videoItem.id);
+            request.onsuccess = () => resolve();
+            request.onerror = () => reject(request.error);
+            transaction.oncomplete = () => db.close();
+          });
+        } catch {
+          localStorage.setItem("superVidBookmarks", JSON.stringify(favorites));
+        }
+      }
+
+      function showToast(message) {
+        let stack = document.querySelector(".toast-stack");
+        if (!stack) {
+          stack = document.createElement("div");
+          stack.className = "toast-stack";
+          document.body.appendChild(stack);
+        }
+
+        const toast = document.createElement("div");
+        toast.className = "toast liquid-glass";
+        toast.textContent = message;
+        stack.appendChild(toast);
+        window.setTimeout(() => {
+          toast.remove();
+          if (!stack.children.length) {
+            stack.remove();
+          }
+        }, 2600);
+      }
+
+      function formatTime(seconds) {
+        if (!Number.isFinite(seconds)) {
+          return "0:00";
+        }
+
+        const totalSeconds = Math.max(0, Math.floor(seconds));
+        const minutes = Math.floor(totalSeconds / 60);
+        const remainingSeconds = String(totalSeconds % 60).padStart(2, "0");
+        return `${minutes}:${remainingSeconds}`;
+      }
+
+      function normalizeText(value) {
+        return value.toLowerCase().trim();
+      }
+
+      function setVisibleState(state) {
+        enterSearch.classList.toggle("hidden", state !== "empty");
+        searchResultsList.classList.toggle("hidden", state !== "results");
+        noResultsFound.classList.toggle("hidden", state !== "none");
+        searchFailed.classList.toggle("hidden", state !== "failed");
+      }
+
+      function buildSearchHash(query) {
+        const cleanQuery = query.trim();
+        return cleanQuery
+          ? `#/search?q=${encodeURIComponent(cleanQuery)}`
+          : "#/search";
+      }
+
+      function setRoute(hash, replace = false) {
+        if (location.hash === hash) {
+          return;
+        }
+        routeIsUpdating = true;
+        if (replace) {
+          history.replaceState(null, "", hash);
+        } else {
+          location.hash = hash;
+        }
+        window.setTimeout(() => {
+          routeIsUpdating = false;
+        }, 0);
+      }
+
+      function routeFromHash() {
+        const hash = location.hash || "#/search";
+        const videoMatch = hash.match(/^#\/video\/([^/?#]+)/);
+
+        if (videoMatch) {
+          openVideo(decodeURIComponent(videoMatch[1]), false, false);
+          return;
+        }
+
+        if (hash.startsWith("#/search")) {
+          const query = new URLSearchParams(hash.split("?")[1] || "").get("q");
+          searchInput.value = query || "";
+          showingFavorites = false;
+          updateFavoriteState();
+          searchVideos(searchInput.value, { updateRoute: false });
+          return;
+        }
+
+        setRoute("#/search", true);
+        searchVideos("", { updateRoute: false });
+      }
+
+      function showSearchPage() {
+        searchVideosPage.classList.remove("hidden");
+        videoWatchPage.classList.add("hidden");
+        searchVideosBtn.classList.add("active");
+        hideFloatingMenus();
+      }
+
+      function showWatchPage() {
+        searchVideosPage.classList.add("hidden");
+        videoWatchPage.classList.remove("hidden");
+        searchVideosBtn.classList.remove("active");
+      }
+
+      function searchVideos(query = searchInput.value, options = {}) {
+        const updateRoute = options.updateRoute !== false;
+        showSearchPage();
+        const cleanQuery = normalizeText(query);
+        if (updateRoute) {
+          setRoute(buildSearchHash(query), true);
+        }
+
+        if (!cleanQuery && !showingFavorites) {
+          renderVideos(videos);
+          setVisibleState("results");
+          return;
+        }
+
+        const sourceVideos = showingFavorites
+          ? videos.filter((item) => favorites.includes(item.id))
+          : videos;
+
+        const matches = sourceVideos.filter((item) => {
+          const searchable = `${item.title} ${item.description} ${item.quality}`;
+          return normalizeText(searchable).includes(cleanQuery);
+        });
+
+        renderVideos(matches);
+        setVisibleState(matches.length ? "results" : "none");
+      }
+
+      function renderVideos(items) {
+        resultsTarget.textContent = "";
+
+        items.forEach((item) => {
+          const card = document.createElement("article");
+          card.className = "video-card liquid-glass";
+          card.tabIndex = 0;
+          card.dataset.id = item.id;
+          card.innerHTML = `
+            <div class="video-thumb${item.thumbnail ? " has-image" : ""}">
+              ${item.thumbnail ? `<img src="${item.thumbnail}" alt="" loading="lazy" />` : ""}
+              <span class="video-quality-pill">${item.quality}</span>
+              <span class="video-duration-pill">${item.duration}</span>
+            </div>
+            <div>
+              <h2 class="video-card-title">${item.title}</h2>
+              <p class="video-card-meta">${item.description}</p>
+            </div>
+          `;
+          card.addEventListener("click", () => openVideo(item.id, true, true));
+          card.addEventListener("keydown", (event) => {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              openVideo(item.id, true, true);
+            }
+          });
+          resultsTarget.appendChild(card);
+        });
+      }
+
+      function refreshRenderedThumbnails() {
+        document.querySelectorAll(".video-card").forEach((card) => {
+          const item = videos.find(
+            (videoItem) => videoItem.id === card.dataset.id,
+          );
+          const thumb = card.querySelector(".video-thumb");
+          if (
+            !item ||
+            !item.thumbnail ||
+            !thumb ||
+            thumb.querySelector("img")
+          ) {
+            return;
+          }
+          thumb.classList.add("has-image");
+          thumb.insertAdjacentHTML(
+            "afterbegin",
+            `<img src="${item.thumbnail}" alt="" loading="lazy" />`,
+          );
+        });
+      }
+
+      function openVideo(id, autoplay = false, updateRoute = true) {
+        const match = videos.find((item) => item.id === id);
+        if (!match) {
+          setVisibleState("failed");
+          showToast("That local video could not be found.");
+          return;
+        }
+
+        currentVideo = match;
+        if (playerSettings.loopDefault) {
+          playerSettings.loop = true;
+        }
+        videoSource.src = match.file;
+        video.load();
+        videoTitle.textContent = `${match.title} - ${match.quality} - ${match.duration}`;
+        document.title = `${match.title} - SuperVidPlayer`;
+        updateFavoriteState();
+        updateTimeUI();
+        applyPlayerSettings();
+        updateCaptionOverlay();
+        showWatchPage();
+        showControls(true);
+
+        if (updateRoute) {
+          setRoute(`#/video/${encodeURIComponent(match.id)}`);
+        }
+
+        if (autoplay) {
+          video.play().catch(() => {
+            showToast("Tap play to start this video.");
+          });
+        }
+      }
+
+      function setPlayIcon(isPlaying) {
+        const path = playPauseBtn.querySelector("path");
+        path.setAttribute("d", isPlaying ? icons.pause : icons.play);
+      }
+
+      function updateTimeUI() {
+        const duration = video.duration || 0;
+        const currentTime = video.currentTime || 0;
+        const progress = duration ? (currentTime / duration) * 100 : 0;
+        timeSlider.value = String(progress);
+        videoTimestamp.textContent = `${formatTime(currentTime)} / ${formatTime(duration)}`;
+      }
+
+      function updateVolumeUI() {
+        const value = Math.round(video.volume * 100);
+        volumeSlider.value = String(value);
+        volumeValue.textContent = `${video.muted ? 0 : value}%`;
+        const mutedOrSilent = video.muted || value === 0;
+        volumeUp.classList.toggle("hidden", mutedOrSilent || value < 50);
+        volumeDown.classList.toggle("hidden", mutedOrSilent || value >= 50);
+        volumeMute.classList.toggle("hidden", !mutedOrSilent);
+        updateCaptionOverlay();
+      }
+
+      async function toggleFavorite(id = currentVideo.id) {
+        const targetVideo = videos.find((item) => item.id === id);
+        if (!targetVideo) {
+          return;
+        }
+
+        const nextEnabled = !favorites.includes(id);
+        if (nextEnabled) {
+          favorites.push(id);
+          showToast("Added to bookmarks.");
+        } else {
+          favorites = favorites.filter((item) => item !== id);
+          showToast("Removed from bookmarks.");
+        }
+
+        await setBookmark(targetVideo, nextEnabled);
+        updateFavoriteState();
+        if (showingFavorites) {
+          searchVideos(searchInput.value, { updateRoute: false });
+        }
+      }
+
+      function applyQuality(value) {
+        playerSettings.quality = value;
+        videoPlayer.dataset.quality = value;
+        qualityValue.textContent = value;
+        configureRenderCanvas();
+        drawVideoFrame();
+        videoQuailityWrapper
+          .querySelectorAll(".dropdown-item")
+          .forEach((option) => {
+            option.classList.toggle("selected", option.dataset.value === value);
+          });
+        savePlayerSettings();
+      }
+
+      function configureRenderCanvas() {
+        const sourceWidth = video.videoWidth || 1280;
+        const sourceHeight = video.videoHeight || 720;
+        const targetSize =
+          playerSettings.quality === "Auto"
+            ? [sourceWidth, sourceHeight]
+            : qualitySizes[playerSettings.quality] || [
+                sourceWidth,
+                sourceHeight,
+              ];
+        const sourceRatio = sourceWidth / sourceHeight || 16 / 9;
+        const targetHeight = targetSize[1];
+        const targetWidth = Math.round(targetHeight * sourceRatio);
+
+        renderCanvas.width = Math.max(1, targetWidth);
+        renderCanvas.height = Math.max(1, targetHeight);
+      }
+
+      function drawVideoFrame() {
+        if (!renderCanvas.width || !renderCanvas.height) {
+          configureRenderCanvas();
+        }
+
+        renderContext.clearRect(0, 0, renderCanvas.width, renderCanvas.height);
+        if (video.readyState < 2) {
+          return;
+        }
+
+        renderContext.imageSmoothingEnabled = !["144p", "240p"].includes(
+          playerSettings.quality,
+        );
+        renderContext.drawImage(
+          video,
+          0,
+          0,
+          renderCanvas.width,
+          renderCanvas.height,
+        );
+      }
+
+      function renderLoop() {
+        drawVideoFrame();
+        if (!video.paused && !video.ended) {
+          renderFrameId = requestAnimationFrame(renderLoop);
+        }
+      }
+
+      function startRenderLoop() {
+        cancelAnimationFrame(renderFrameId);
+        renderLoop();
+      }
+
+      function applyPlayerSettings() {
+        applyQuality(playerSettings.quality);
+        video.playbackRate = playerSettings.speed;
+        video.loop = playerSettings.loop;
+        video.volume = Math.min(1, Math.max(0, playerSettings.volume));
+        video.muted = playerSettings.muted;
+        video.preservesPitch = !playerSettings.changePitch;
+        captionsEnabled = playerSettings.captions;
+        loopVideoToggleInput.checked = playerSettings.loop;
+        changeAudioPitchToggleInput.checked = playerSettings.changePitch;
+        captionsBtn.classList.toggle("active", captionsEnabled);
+        playbackSpeedValue.textContent = `${playerSettings.speed}x`;
+        videoSpeedWrapper
+          .querySelectorAll(".dropdown-item")
+          .forEach((option) => {
+            option.classList.toggle(
+              "selected",
+              Number(option.dataset.value) === playerSettings.speed,
+            );
+          });
+        updateVolumeUI();
+      }
+
+      function detectAudioState() {
+        const hasAudio =
+          video.mozHasAudio ||
+          Boolean(video.webkitAudioDecodedByteCount) ||
+          (video.audioTracks && video.audioTracks.length > 0);
+
+        if (video.muted || video.volume === 0) {
+          return "Audio muted";
+        }
+
+        if (video.paused) {
+          return "Video paused";
+        }
+
+        if (video.readyState < 2) {
+          return "Detecting audio";
+        }
+
+        if (hasAudio) {
+          return "Audio detected";
+        }
+
+        return "No separate caption track detected";
+      }
+
+      function updateCaptionOverlay() {
+        if (!captionsEnabled) {
+          captionOverlay.classList.add("hidden");
+          captionOverlay.textContent = "";
+          return;
+        }
+
+        captionOverlay.classList.remove("hidden");
+        captionOverlay.textContent = detectAudioState();
+      }
+
+      function showControls(force = false) {
+        window.clearTimeout(controlsTimer);
+        videoPlayer.classList.add("controls-visible");
+        videoPlayer.classList.remove("controls-hidden");
+
+        if (force || video.paused) {
+          return;
+        }
+
+        controlsTimer = window.setTimeout(() => {
+          if (!video.paused) {
+            videoPlayer.classList.add("controls-hidden");
+            videoPlayer.classList.remove("controls-visible");
+          }
+        }, 2200);
+      }
+
+      async function generateThumbnail(item) {
+        return new Promise((resolve) => {
+          const thumbVideo = document.createElement("video");
+          thumbVideo.muted = true;
+          thumbVideo.preload = "metadata";
+          thumbVideo.playsInline = true;
+          thumbVideo.src = item.file;
+          let resolved = false;
+
+          const cleanup = () => {
+            thumbVideo.removeAttribute("src");
+            thumbVideo.load();
+          };
+
+          const capture = () => {
+            if (resolved) {
+              return;
+            }
+            resolved = true;
+            try {
+              const canvas = document.createElement("canvas");
+              canvas.width = 640;
+              canvas.height = 360;
+              const context = canvas.getContext("2d");
+              context.drawImage(thumbVideo, 0, 0, canvas.width, canvas.height);
+              cleanup();
+              resolve(canvas.toDataURL("image/jpeg", 0.74));
+            } catch {
+              cleanup();
+              resolve("");
+            }
+          };
+
+          thumbVideo.addEventListener(
+            "loadedmetadata",
+            () => {
+              const seekTime = Math.min(
+                0.5,
+                Math.max(0, thumbVideo.duration || 0),
+              );
+              if (seekTime > 0) {
+                thumbVideo.currentTime = seekTime;
+              }
+            },
+            { once: true },
+          );
+
+          thumbVideo.addEventListener("loadeddata", capture, { once: true });
+          thumbVideo.addEventListener("seeked", capture, { once: true });
+
+          thumbVideo.addEventListener(
+            "error",
+            () => {
+              if (resolved) {
+                return;
+              }
+              resolved = true;
+              cleanup();
+              resolve("");
+            },
+            { once: true },
+          );
+        });
+      }
+
+      async function generateThumbnails() {
+        await Promise.all(
+          videos.map(async (item) => {
+            item.thumbnail = await generateThumbnail(item);
+          }),
+        );
+        refreshRenderedThumbnails();
+      }
+
+      function updateFavoriteState() {
+        const isFavorite = favorites.includes(currentVideo.id);
+        favoriteVideoBtn.classList.toggle("active", isFavorite);
+        favoritesBtn.classList.toggle("active", showingFavorites);
+      }
+
+      function hideFloatingMenus() {
+        videoSettingsWrapper.classList.add("hidden");
+        videoQuailityWrapper.classList.add("hidden");
+        videoSpeedWrapper.classList.add("hidden");
+        volumePanel.classList.add("hidden");
+      }
+
+      function openShareModal() {
+        shareVideoModal.classList.add("open");
+        shareModalOptions.textContent = "";
+        loadingShare.classList.remove("hidden");
+
+        window.setTimeout(() => {
+          const shareUrl = `${location.href.split("#")[0]}#/video/${encodeURIComponent(currentVideo.id)}`;
+          const encodedUrl = encodeURIComponent(shareUrl);
+          const encodedTitle = encodeURIComponent(currentVideo.title);
+          loadingShare.classList.add("hidden");
+          shareModalOptions.innerHTML = `
+            <div class="share-link-box">
+              <div class="share-link-value">${shareUrl}</div>
+            </div>
+            <div class="share-button-grid">
+              <button class="share-social-btn liquid-glass" type="button" data-share="copy">Copy</button>
+              <button class="share-social-btn liquid-glass" type="button" data-share="facebook">Facebook</button>
+              <button class="share-social-btn liquid-glass" type="button" data-share="whatsapp">WhatsApp</button>
+              <button class="share-social-btn liquid-glass" type="button" data-share="x">X</button>
+              <button class="share-social-btn liquid-glass" type="button" data-share="reddit">Reddit</button>
+            </div>
+          `;
+
+          shareModalOptions
+            .querySelectorAll("[data-share]")
+            .forEach((button) => {
+              button.addEventListener("click", () => {
+                const action = button.dataset.share;
+                if (action === "copy") {
+                  copyText(shareUrl);
+                  return;
+                }
+                const urls = {
+                  facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,
+                  whatsapp: `https://wa.me/?text=${encodedTitle}%20${encodedUrl}`,
+                  x: `https://x.com/intent/tweet?text=${encodedTitle}&url=${encodedUrl}`,
+                  reddit: `https://www.reddit.com/submit?url=${encodedUrl}&title=${encodedTitle}`,
+                };
+                window.open(urls[action], "_blank", "noopener,noreferrer");
+              });
+            });
+        }, 320);
+      }
+      function closeShareModal() {
+        shareVideoModal.classList.remove("open");
+      }
+
+      function openSettingsModal() {
+        defaultLoopToggleInput.checked = playerSettings.loopDefault;
+        renderSettingsDropdowns();
+        settingsModal.classList.add("open");
+      }
+
+      function closeSettingsModal() {
+        settingsModal.classList.remove("open");
+        document
+          .querySelectorAll(".custom-dropdown-menu")
+          .forEach((menu) => menu.classList.add("hidden"));
+      }
+
+      function copyText(value) {
+        if (!navigator.clipboard) {
+          showToast("Clipboard is not available in this browser.");
+          return;
+        }
+
+        navigator.clipboard
+          .writeText(value)
+          .then(() => showToast("Link copied."))
+          .catch(() => showToast("Unable to copy the link."));
+      }
+
+      function shareCurrentVideo(url) {
+        if (!navigator.share) {
+          copyText(url);
+          return;
+        }
+
+        navigator
+          .share({
+            title: currentVideo.title,
+            text: currentVideo.description,
+            url,
+          })
+          .catch(() => showToast("Share was closed."));
+      }
+
+      searchVideosBtn.addEventListener("click", () => {
+        showingFavorites = false;
+        updateFavoriteState();
+        searchInput.focus();
+        searchVideos(searchInput.value, { updateRoute: true });
+      });
+
+      sidebarSettingsBtn.addEventListener("click", () => {
+        openSettingsModal();
+      });
+      topbarSettingsBtn.addEventListener("click", () => {
+        openSettingsModal();
+      });
+
+      searchInput.addEventListener("input", () => {
+        showingFavorites = false;
+        updateFavoriteState();
+        searchVideos(searchInput.value, { updateRoute: true });
+      });
+
+      document.querySelector(".search-bar").addEventListener("click", () => {
+        if (window.innerWidth <= 500) {
+          document.querySelector(".search-bar").classList.add("search-open");
+          showSearchPage();
+          searchInput.focus();
+        }
+      });
+
+      searchInput.addEventListener("blur", () => {
+        if (window.innerWidth <= 500 && !searchInput.value.trim()) {
+          document.querySelector(".search-bar").classList.remove("search-open");
+        }
+      });
+
+      searchInput.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+          const firstCard = resultsTarget.querySelector(".video-card");
+          if (firstCard) {
+            firstCard.click();
+          }
+        }
+      });
+
+      favoritesBtn.addEventListener("click", () => {
+        showingFavorites = !showingFavorites;
+        searchInput.value = "";
+        updateFavoriteState();
+        searchVideos("", { updateRoute: true });
+        showToast(
+          showingFavorites ? "Showing bookmarks." : "Showing all videos.",
+        );
+      });
+
+      retryBtn.addEventListener("click", () => {
+        setVisibleState("results");
+        renderVideos(videos);
+      });
+
+      playPauseBtn.addEventListener("click", () => {
+        if (video.paused) {
+          video.play().catch(() => showToast("Video playback was blocked."));
+        } else {
+          video.pause();
+        }
+      });
+
+      video.addEventListener("click", () => {
+        playPauseBtn.click();
+      });
+      renderCanvas.addEventListener("click", () => {
+        playPauseBtn.click();
+      });
+
+      video.addEventListener("play", () => {
+        setPlayIcon(true);
+        updateCaptionOverlay();
+        startRenderLoop();
+        showControls();
+      });
+      video.addEventListener("pause", () => {
+        setPlayIcon(false);
+        updateCaptionOverlay();
+        drawVideoFrame();
+        showControls(true);
+      });
+      video.addEventListener("timeupdate", () => {
+        updateTimeUI();
+        drawVideoFrame();
+      });
+      video.addEventListener("loadedmetadata", () => {
+        configureRenderCanvas();
+        updateTimeUI();
+        updateCaptionOverlay();
+      });
+      video.addEventListener("loadeddata", drawVideoFrame);
+      video.addEventListener("seeked", drawVideoFrame);
+      video.addEventListener("volumechange", () => {
+        playerSettings.volume = video.volume;
+        playerSettings.muted = video.muted;
+        savePlayerSettings();
+        updateVolumeUI();
+      });
+      video.addEventListener("error", () => {
+        showSearchPage();
+        setVisibleState("failed");
+        showToast("This local video failed to load.");
+      });
+
+      timeSlider.addEventListener("input", () => {
+        if (!video.duration) {
+          return;
+        }
+        video.currentTime = (Number(timeSlider.value) / 100) * video.duration;
+      });
+
+      volumeBtn.addEventListener("click", (event) => {
+        if (event.target.closest(".volume-slider")) {
+          return;
+        }
+        volumePanel.classList.toggle("hidden");
+      });
+
+      volumeBtn.addEventListener("dblclick", () => {
+        video.muted = !video.muted;
+      });
+
+      volumeSlider.addEventListener("input", () => {
+        const nextVolume = Number(volumeSlider.value) / 100;
+        video.volume = nextVolume;
+        video.muted = nextVolume === 0;
+        if (nextVolume > 0) {
+          lastVolume = nextVolume;
+        }
+      });
+
+      volumeMute.addEventListener("click", () => {
+        video.muted = false;
+        video.volume = lastVolume || 1;
+      });
+
+      favoriteVideoBtn.addEventListener("click", () => toggleFavorite());
+
+      shareVideoBtn.addEventListener("click", openShareModal);
+      shareModalClose.addEventListener("click", closeShareModal);
+      shareVideoModal.addEventListener("click", (event) => {
+        if (event.target === shareVideoModal) {
+          closeShareModal();
+        }
+      });
+      settingsModalClose.addEventListener("click", closeSettingsModal);
+      settingsModal.addEventListener("click", (event) => {
+        if (event.target === settingsModal) {
+          closeSettingsModal();
+        }
+      });
+      defaultLoopToggleInput.addEventListener("change", () => {
+        playerSettings.loopDefault = defaultLoopToggleInput.checked;
+        playerSettings.loop = defaultLoopToggleInput.checked;
+        loopVideoToggleInput.checked = playerSettings.loop;
+        video.loop = playerSettings.loop;
+        savePlayerSettings();
+        showToast(
+          playerSettings.loopDefault
+            ? "Loop by default enabled."
+            : "Loop by default disabled.",
+        );
+      });
+      clearCacheBtn.addEventListener("click", async () => {
+        if ("caches" in window) {
+          const names = await caches.keys();
+          await Promise.all(names.map((name) => caches.delete(name)));
+        }
+        videos.forEach((item) => {
+          delete item.thumbnail;
+        });
+        searchVideos(searchInput.value, { updateRoute: false });
+        generateThumbnails();
+        showToast("Cache cleared.");
+      });
+      resetPreferencesBtn.addEventListener("click", () => {
+        playerSettings = {
+          quality: "Auto",
+          speed: 1,
+          loop: false,
+          changePitch: false,
+          volume: 1,
+          muted: false,
+          captions: false,
+          theme: "dark",
+          language: "en",
+          loopDefault: false,
+        };
+        savePlayerSettings();
+        applyTheme();
+        applyLanguage();
+        applyPlayerSettings();
+        defaultLoopToggleInput.checked = false;
+        showToast("Preferences reset.");
+      });
+      deleteEverythingBtn.addEventListener("click", async () => {
+        localStorage.clear();
+        if ("caches" in window) {
+          const names = await caches.keys();
+          await Promise.all(names.map((name) => caches.delete(name)));
+        }
+        if ("indexedDB" in window) {
+          await new Promise((resolve) => {
+            const request = indexedDB.deleteDatabase(BOOKMARK_DB);
+            request.onsuccess = resolve;
+            request.onerror = resolve;
+            request.onblocked = resolve;
+          });
+        }
+        favorites = [];
+        playerSettings = loadPlayerSettings();
+        applyTheme();
+        applyLanguage();
+        applyPlayerSettings();
+        closeSettingsModal();
+        showToast("Everything was deleted.");
+      });
+
+      pipBtn.addEventListener("click", () => {
+        if (!document.pictureInPictureEnabled) {
+          showToast("Picture in Picture is not available.");
+          return;
+        }
+
+        if (document.pictureInPictureElement) {
+          document.exitPictureInPicture();
+          return;
+        }
+
+        video
+          .requestPictureInPicture()
+          .catch(() => showToast("Picture in Picture could not start."));
+      });
+
+      videoControlsSettingsBtn.addEventListener("click", () => {
+        videoSettingsWrapper.classList.toggle("hidden");
+        videoQuailityWrapper.classList.add("hidden");
+        videoSpeedWrapper.classList.add("hidden");
+      });
+
+      videoQuailityBtn.addEventListener("click", () => {
+        videoQuailityWrapper.classList.toggle("hidden");
+        videoSpeedWrapper.classList.add("hidden");
+      });
+
+      videoQuailityWrapper
+        .querySelectorAll(".dropdown-item")
+        .forEach((item) => {
+          item.addEventListener("click", () => {
+            applyQuality(item.dataset.value);
+            videoQuailityWrapper.classList.add("hidden");
+            showToast(`Quality view set to ${item.dataset.value}.`);
+          });
+        });
+
+      playbackSpeedBtn.addEventListener("click", () => {
+        videoSpeedWrapper.classList.toggle("hidden");
+        videoQuailityWrapper.classList.add("hidden");
+      });
+
+      videoSpeedWrapper.querySelectorAll(".dropdown-item").forEach((item) => {
+        item.addEventListener("click", () => {
+          const speed = Number(item.dataset.value);
+          video.playbackRate = speed;
+          playerSettings.speed = speed;
+          video.preservesPitch = !playerSettings.changePitch;
+          savePlayerSettings();
+          videoSpeedWrapper
+            .querySelectorAll(".dropdown-item")
+            .forEach((option) => option.classList.remove("selected"));
+          item.classList.add("selected");
+          playbackSpeedValue.textContent = `${item.dataset.value}x`;
+          videoSpeedWrapper.classList.add("hidden");
+        });
+      });
+
+      loopVideoToggle.addEventListener("click", (event) => {
+        if (event.target !== loopVideoToggleInput) {
+          loopVideoToggleInput.checked = !loopVideoToggleInput.checked;
+        }
+        video.loop = loopVideoToggleInput.checked;
+        playerSettings.loop = video.loop;
+        savePlayerSettings();
+        showToast(video.loop ? "Loop enabled." : "Loop disabled.");
+      });
+
+      changeAudioPitchToggle.addEventListener("click", (event) => {
+        if (event.target !== changeAudioPitchToggleInput) {
+          changeAudioPitchToggleInput.checked =
+            !changeAudioPitchToggleInput.checked;
+        }
+        playerSettings.changePitch = changeAudioPitchToggleInput.checked;
+        video.preservesPitch = !playerSettings.changePitch;
+        savePlayerSettings();
+      });
+
+      captionsBtn.addEventListener("click", () => {
+        captionsEnabled = !captionsEnabled;
+        playerSettings.captions = captionsEnabled;
+        captionsBtn.classList.toggle("active", captionsEnabled);
+        savePlayerSettings();
+        updateCaptionOverlay();
+        showToast(captionsEnabled ? "Captions enabled." : "Captions disabled.");
+      });
+
+      fullscreenBtn.addEventListener("click", (event) => {
+        event.stopPropagation();
+        if (document.fullscreenElement) {
+          document.exitFullscreen();
+          return;
+        }
+
+        videoPlayerContainer.requestFullscreen().catch(() => {
+          showToast("Fullscreen could not start.");
+        });
+      });
+
+      document.addEventListener("fullscreenchange", () => {
+        const isFullscreen = Boolean(document.fullscreenElement);
+        fullscreenIcon.classList.toggle("hidden", isFullscreen);
+        exitFullscreenIcon.classList.toggle("hidden", !isFullscreen);
+      });
+
+      document.addEventListener("keydown", (event) => {
+        const typing = event.target === searchInput;
+        if (typing) {
+          return;
+        }
+
+        if (event.key === " ") {
+          event.preventDefault();
+          playPauseBtn.click();
+        }
+        if (event.key.toLowerCase() === "f") {
+          fullscreenBtn.click();
+        }
+        if (event.key.toLowerCase() === "m") {
+          video.muted = !video.muted;
+        }
+        if (event.key.toLowerCase() === "c") {
+          captionsBtn.click();
+        }
+        if (event.key === "Escape") {
+          closeShareModal();
+          closeSettingsModal();
+          hideFloatingMenus();
+        }
+      });
+
+      document.addEventListener("click", (event) => {
+        const floatingArea = event.target.closest(
+          ".video-settingsWrapper, .dropdown-wrapper, .settingsBtn, .volume-btn",
+        );
+        if (!floatingArea) {
+          hideFloatingMenus();
+        }
+        if (!event.target.closest(".custom-dropdown")) {
+          document
+            .querySelectorAll(".custom-dropdown-menu")
+            .forEach((menu) => menu.classList.add("hidden"));
+        }
+      });
+
+      document
+        .querySelector(".video-controls")
+        .addEventListener("dblclick", (event) => {
+          event.stopPropagation();
+        });
+
+      videoPlayer.addEventListener("mousemove", () => showControls());
+      videoPlayer.addEventListener("mouseenter", () => showControls(true));
+      videoPlayer.addEventListener("mouseleave", () => {
+        if (!video.paused) {
+          videoPlayer.classList.add("controls-hidden");
+          videoPlayer.classList.remove("controls-visible");
+        }
+      });
+      videoPlayer.addEventListener("dblclick", (event) => {
+        if (event.target.closest(".video-controls, .caption-overlay")) {
+          return;
+        }
+        fullscreenBtn.click();
+      });
+
+      window.addEventListener("hashchange", () => {
+        if (!routeIsUpdating) {
+          routeFromHash();
+        }
+      });
+
+      async function startApp() {
+        favorites = await readBookmarks();
+        renderVideos(videos);
+        setVisibleState("results");
+        applyTheme();
+        applyLanguage();
+        applyPlayerSettings();
+        generateThumbnails();
+
+        if (location.hash) {
+          routeFromHash();
+        } else {
+          setRoute("#/search", true);
+          searchVideos("", { updateRoute: false });
+        }
+      }
+
+      startApp();
+    </script>
+  </body>
+</html>
